@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Thin launcher so the store runs under python -I (isolated mode) from any
+# working directory; sys.path bootstrap happens inside cli.py itself.
+exec python3 -I "$(dirname "$0")/../src/fhist/cli.py" "$@"

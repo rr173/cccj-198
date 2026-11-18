@@ -1,0 +1,46 @@
+{
+  "format_version": 1,
+  "source_server": "https://fhir.example.org/a",
+  "tenant": "tenant-main",
+  "aliases": [
+    "https://fhir-alias.example.net/a"
+  ],
+  "baseline": {
+    "seq": 10,
+    "path": "baseline/baseline.ndjson",
+    "sha256": "6a073c159a09c6d760ee0861f6ef93386a483d822b5de782226f0d9768f67c2f",
+    "resource_count": 7
+  },
+  "transactions": [
+    {
+      "seq": 11,
+      "operation_count": 2,
+      "shards": [
+        {
+          "ordinal": 0,
+          "path": "shards/seq-11-part-0.ndjson",
+          "sha256": "d500edcf87ffaa8856b75500f408854cd526581fce4909d61c37e414469002d2",
+          "operation_count": 1
+        },
+        {
+          "ordinal": 1,
+          "path": "shards/seq-11-part-1.ndjson",
+          "sha256": "0c00cb851326727c16a9c341fc5a232c53fd9d191522d326747220979d656cb6",
+          "operation_count": 1
+        }
+      ]
+    },
+    {
+      "seq": 12,
+      "operation_count": 1,
+      "shards": [
+        {
+          "ordinal": 0,
+          "path": "shards/seq-12-part-0.ndjson",
+          "sha256": "566a160aea1b95d44d3f5903d21f19f730134306f14a9f3ea471fc68470462e7",
+          "operation_count": 1
+        }
+      ]
+    }
+  ]
+}

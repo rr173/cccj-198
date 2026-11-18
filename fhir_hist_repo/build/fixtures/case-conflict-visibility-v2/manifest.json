@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "source_server": "https://fhir.example.org/a",
+  "tenant": "tenant-conflict-visibility",
+  "aliases": [],
+  "baseline": {
+    "seq": 5,
+    "path": "baseline/baseline.ndjson",
+    "sha256": "93b48bf4689b7f1a4aa24a43ae681cda49e842c73b09bc17da01a5cba01920ac",
+    "resource_count": 2
+  },
+  "transactions": [
+    {
+      "seq": 6,
+      "operation_count": 1,
+      "shards": [
+        {
+          "ordinal": 0,
+          "path": "shards/seq-6.ndjson",
+          "sha256": "d21f6b23f12a636ec2f7703ac102efd779e397947ad2d01a95e1d0152ff338ee",
+          "operation_count": 1
+        }
+      ]
+    }
+  ]
+}

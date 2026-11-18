@@ -1,0 +1,66 @@
+{
+  "sources": [
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/b",
+      "aliases": []
+    },
+    {
+      "source_server": "https://fhir.example.org/large",
+      "aliases": []
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    },
+    {
+      "source_server": "https://fhir.example.org/a",
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ]
+    }
+  ]
+}
