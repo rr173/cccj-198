@@ -1,0 +1,99 @@
+{
+  "delivery": {
+    "files": [
+      {
+        "path": "delivery/facts-full.ndjson",
+        "role": "full",
+        "rows": 60,
+        "sha256": "2cd89dfc802dd1a29f4d11504123cc1d189f2049fc10540d80153d0a71220a0b"
+      }
+    ],
+    "full_rows": 60,
+    "kind": "initial"
+  },
+  "evidence": {
+    "files": [
+      {
+        "path": "evidence/facts-full.ndjson",
+        "role": "facts-full",
+        "rows": 60,
+        "sha256": "2cd89dfc802dd1a29f4d11504123cc1d189f2049fc10540d80153d0a71220a0b"
+      },
+      {
+        "path": "evidence/slices.ndjson",
+        "role": "slices",
+        "rows": 19172,
+        "sha256": "a760ea97b31ddc5767ccf402fe877592bbc015588930f1f57d6678efdf690a7e"
+      },
+      {
+        "path": "evidence/exceptions.ndjson",
+        "role": "exceptions",
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "evidence/unassigned.ndjson",
+        "role": "unassigned",
+        "rows": 221,
+        "sha256": "c8cd9ef7d2a512400c1a08f67bf822ec936c0979a8db9ea9d4b09ea62f737bd0"
+      },
+      {
+        "path": "evidence/calendar.csv",
+        "role": "calendar",
+        "rows": 1973,
+        "sha256": "910e0da22bc329655ce0f63af4a1551a308ec09b8dce4bec46faf4b097822298"
+      },
+      {
+        "path": "evidence/inputs.json",
+        "role": "inputs",
+        "rows": null,
+        "sha256": "3a5275090c35217b71fddf93135bb4fae40a6eee9db5f75bbb01cc904c36932e"
+      }
+    ]
+  },
+  "format": "fhist-bedreport/1",
+  "release": {
+    "base": null,
+    "calendar": {
+      "beds": 1500,
+      "rows": 1973,
+      "sha256": "910e0da22bc329655ce0f63af4a1551a308ec09b8dce4bec46faf4b097822298"
+    },
+    "cut_seq": 100,
+    "kind": "initial",
+    "release_id": "8118d5d2c1a5184670a4aa29897f6543910ce5a0b89a28b24142a8e22db86ec4",
+    "seq": 1,
+    "target": {
+      "fact_rows": 60,
+      "facts_sha256": "3138fca71b2eb7630b5ca4fe4e14ce58ec8ce072fa9e020ca011b987602b7356"
+    },
+    "window": {
+      "days": 5,
+      "end_utc": "2026-04-06T00:00:00+00:00",
+      "start_utc": "2026-04-01T00:00:00+00:00"
+    }
+  },
+  "series": {
+    "date_from": "2026-04-01",
+    "date_to": "2026-04-06",
+    "series_id": "f76fde3182c80cebdf1df58549b312981fae4403d9dd379dbcdbf45c86a1fdcf",
+    "source_server": "https://fhir.example.org/largeward",
+    "tenant": "tenant-largeward",
+    "timezone": "UTC"
+  },
+  "summary": {
+    "conflict_seconds": 13047322,
+    "empty_seconds": 518999929,
+    "encounters_scanned": 4000,
+    "exceptions": 0,
+    "fact_rows": 60,
+    "location_entries": 6038,
+    "location_entries_ignored_status": 0,
+    "occupancy_intervals": 6038,
+    "open_seconds": 634694400,
+    "single_seconds": 102647149,
+    "slices": 19172,
+    "unassigned_intervals": 221,
+    "unassigned_seconds": 2833372
+  }
+}

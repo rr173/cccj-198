@@ -1,0 +1,13 @@
+{
+  "base_release_id": null,
+  "calendar_beds": 1,
+  "calendar_rows": 1,
+  "calendar_sha256": "cb0ec12315989ad187003ca05ab4424c22206e2e5a22511b23ad9c2cfe3ef4a1",
+  "cut_seq": 11,
+  "date_from": "2026-03-07",
+  "date_to": "2026-03-10",
+  "format": "fhist-bedreport/1",
+  "source_server": "https://fhir.example.org/a",
+  "tenant": "tenant-ward",
+  "timezone": "America/New_York"
+}

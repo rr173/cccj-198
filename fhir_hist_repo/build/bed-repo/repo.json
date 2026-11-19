@@ -1,0 +1,19 @@
+{
+  "format_version": 1,
+  "sources": [
+    {
+      "aliases": [
+        "https://fhir-alias.example.net/a"
+      ],
+      "source_server": "https://fhir.example.org/a"
+    },
+    {
+      "aliases": [],
+      "source_server": "https://fhir.example.org/b"
+    },
+    {
+      "aliases": [],
+      "source_server": "https://fhir.example.org/largeward"
+    }
+  ]
+}

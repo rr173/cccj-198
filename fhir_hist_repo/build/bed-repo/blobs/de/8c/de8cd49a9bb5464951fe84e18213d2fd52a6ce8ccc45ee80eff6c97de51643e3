@@ -1,0 +1,1 @@
+{"class":{"code":"IMP","system":"http://terminology.hl7.org/CodeSystem/v3-ActCode"},"id":"e-l-01003","location":[{"location":{"reference":"Location/b-l-0573"},"period":{"end":"2026-04-03T07:42:56+00:00","start":"2026-04-02T23:42:56+00:00"},"status":"completed"}],"meta":{"lastUpdated":"2026-01-10T00:00:00Z","versionId":"v2"},"resourceType":"Encounter","status":"completed"}

@@ -99,3 +99,63 @@ class UnknownAudit(FHError):
     """The requested audit id does not exist in this repository."""
 
     status = "unknown_audit"
+
+
+class BedCalendarError(FHError):
+    """The bed-open calendar CSV is malformed or internally inconsistent."""
+
+    status = "bad_calendar"
+
+
+class CalendarBedMissing(FHError):
+    """A bed used by the calendar is not a current Location at the cut."""
+
+    status = "calendar_bed_missing"
+
+
+class UnknownRelease(FHError):
+    """A bedreport base-release reference matched no published release."""
+
+    status = "unknown_release"
+
+
+class ReleaseError(FHError):
+    """A bedreport release directory is missing, corrupt or was tampered with."""
+
+    status = "bad_release"
+
+
+class SeriesMismatch(FHError):
+    """A base release belongs to a different bedreport series."""
+
+    status = "series_mismatch"
+
+
+class DeliveryError(FHError):
+    """A delivery file is missing, corrupt or fails manifest verification."""
+
+    status = "bad_delivery"
+
+
+class BaseMismatch(FHError):
+    """The local partition is not the release manifest's previous batch."""
+
+    status = "base_mismatch"
+
+
+class LocalStateMismatch(FHError):
+    """Recorded loader state disagrees with the actual local partition."""
+
+    status = "local_state_mismatch"
+
+
+class TargetMismatch(FHError):
+    """The post-load partition does not match the manifest's target identity."""
+
+    status = "target_mismatch"
+
+
+class PartitionNotEmpty(FHError):
+    """An initial (full) release was offered to a non-empty partition."""
+
+    status = "partition_not_empty"

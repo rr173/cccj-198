@@ -1,0 +1,110 @@
+{
+  "delivery": {
+    "files": [
+      {
+        "path": "delivery/facts-upsert.ndjson",
+        "role": "upsert",
+        "rows": 60,
+        "sha256": "a49b5d1f9790dc7fdadbe40fa0b27ab5975dd071c6a74ac1826d633ef10cdc6d"
+      },
+      {
+        "path": "delivery/facts-retract.ndjson",
+        "role": "retract",
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "kind": "correction",
+    "retract_rows": 0,
+    "upsert_rows": 60
+  },
+  "evidence": {
+    "files": [
+      {
+        "path": "evidence/facts-full.ndjson",
+        "role": "facts-full",
+        "rows": 60,
+        "sha256": "a49b5d1f9790dc7fdadbe40fa0b27ab5975dd071c6a74ac1826d633ef10cdc6d"
+      },
+      {
+        "path": "evidence/slices.ndjson",
+        "role": "slices",
+        "rows": 18328,
+        "sha256": "ff3e23d8739dce36e2ba1568c25cc3f154689596ab5fce8fc7f5c894fca69d97"
+      },
+      {
+        "path": "evidence/exceptions.ndjson",
+        "role": "exceptions",
+        "rows": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "evidence/unassigned.ndjson",
+        "role": "unassigned",
+        "rows": 199,
+        "sha256": "6517c17955abbb61e6fcb2cb654c82255414d809f36c89613d86b79fa8ada640"
+      },
+      {
+        "path": "evidence/calendar.csv",
+        "role": "calendar",
+        "rows": 1973,
+        "sha256": "73cc7896967da20beaf6032cd77bdb6c2800aa6c1ddeee5aaf1662d33e4b808c"
+      },
+      {
+        "path": "evidence/inputs.json",
+        "role": "inputs",
+        "rows": null,
+        "sha256": "4fc6a33a07cf192f1a869a78ed9e5bccb98966080add474a977c82cdf9f6da6b"
+      }
+    ]
+  },
+  "format": "fhist-bedreport/1",
+  "release": {
+    "base": {
+      "facts_sha256": "3138fca71b2eb7630b5ca4fe4e14ce58ec8ce072fa9e020ca011b987602b7356",
+      "release_id": "8118d5d2c1a5184670a4aa29897f6543910ce5a0b89a28b24142a8e22db86ec4",
+      "seq": 1
+    },
+    "calendar": {
+      "beds": 1500,
+      "rows": 1973,
+      "sha256": "73cc7896967da20beaf6032cd77bdb6c2800aa6c1ddeee5aaf1662d33e4b808c"
+    },
+    "cut_seq": 101,
+    "kind": "correction",
+    "release_id": "cf7642be7faa3a43eee6c088d83661ed2079a6bbb9b9e13e24e60ea00bbbdd5c",
+    "seq": 2,
+    "target": {
+      "fact_rows": 60,
+      "facts_sha256": "cfb4756229a443debe800b40901cf52d958b40fa72c0a447c06ebef65dadb85f"
+    },
+    "window": {
+      "days": 5,
+      "end_utc": "2026-04-06T00:00:00+00:00",
+      "start_utc": "2026-04-01T00:00:00+00:00"
+    }
+  },
+  "series": {
+    "date_from": "2026-04-01",
+    "date_to": "2026-04-06",
+    "series_id": "f76fde3182c80cebdf1df58549b312981fae4403d9dd379dbcdbf45c86a1fdcf",
+    "source_server": "https://fhir.example.org/largeward",
+    "tenant": "tenant-largeward",
+    "timezone": "UTC"
+  },
+  "summary": {
+    "conflict_seconds": 11762177,
+    "empty_seconds": 526359572,
+    "encounters_scanned": 3709,
+    "exceptions": 0,
+    "fact_rows": 60,
+    "location_entries": 5597,
+    "location_entries_ignored_status": 0,
+    "occupancy_intervals": 5597,
+    "open_seconds": 634694400,
+    "single_seconds": 96572651,
+    "slices": 18328,
+    "unassigned_intervals": 199,
+    "unassigned_seconds": 2542027
+  }
+}

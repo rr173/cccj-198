@@ -1,7 +1,8 @@
 """Command-line entry point for the FHIR R4 history object store.
 
 Subcommands: init, stage, advance, status, resource, references, trace-path,
-verify, profile (register/list/show), audit (run/list/status/findings/report).
+verify, profile (register/list/show), audit (run/list/status/findings/report),
+bedreport (publish/list/show/verify/evidence) and bedload.
 All output is JSON on stdout; failures carry a stable ``status`` string and a
 non-zero exit code. Run with ``python -I`` from any directory.
 
@@ -27,10 +28,12 @@ if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
 from fhist import audit as audit_mod  # noqa: E402
+from fhist import bedload as bedload_mod  # noqa: E402
+from fhist import bedreport as bedreport_mod  # noqa: E402
 from fhist import ingest, profiles, query, status as status_mod  # noqa: E402
 from fhist.config import RepoConfig  # noqa: E402
 from fhist.db import connect, initialise  # noqa: E402
-from fhist.errors import FHError  # noqa: E402
+from fhist.errors import FHError, UsageError  # noqa: E402
 from fhist.intake import intake_package  # noqa: E402
 from fhist.paths import RepoPaths  # noqa: E402
 
@@ -41,6 +44,8 @@ def _emit(obj: Any) -> None:
 
 
 def _open_repo(args: argparse.Namespace) -> tuple[RepoPaths, RepoConfig, Any]:
+    if not getattr(args, "repo", None):
+        raise UsageError("--repo is required for this command")
     paths = RepoPaths(args.repo)
     if not paths.exists():
         raise FHError(f"not an initialised repository: {args.repo}")
@@ -280,10 +285,73 @@ def cmd_audit_report(args: argparse.Namespace) -> None:
         conn.close()
 
 
+# ---------------------------------------------------------------------------
+# Bed daily-report publishing and downstream loading
+# ---------------------------------------------------------------------------
+
+def cmd_bedreport_publish(args: argparse.Namespace) -> None:
+    paths, config, conn = _open_repo(args)
+    try:
+        _emit(bedreport_mod.publish(
+            paths, conn, config,
+            source_server=args.source_server, tenant=args.tenant,
+            cut_seq=args.cut, tz_name=args.timezone,
+            date_from=args.from_date, date_to=args.to_date,
+            calendar_path=args.calendar,
+            base_release_ref=args.base_release,
+            reports_root=args.reports_root))
+    finally:
+        conn.close()
+
+
+def cmd_bedreport_list(args: argparse.Namespace) -> None:
+    if args.reports_root:
+        root = args.reports_root
+    else:
+        paths, _config, conn = _open_repo(args)
+        conn.close()
+        root = paths.root / "bedreports"
+    _emit(bedreport_mod.list_reports(root))
+
+
+def cmd_bedreport_show(args: argparse.Namespace) -> None:
+    manifest = bedreport_mod.load_release_manifest(args.release)
+    out = dict(manifest)
+    out["status"] = "ok"
+    _emit(out)
+
+
+def cmd_bedreport_verify(args: argparse.Namespace) -> None:
+    manifest = bedreport_mod.load_release_manifest(args.release)
+    problems = bedreport_mod.verify_release_files(args.release, manifest)
+    problems += bedreport_mod.verify_facts_file(args.release, manifest)
+    _emit({"status": "ok" if not problems else "corrupt",
+           "release": args.release,
+           "release_id": manifest["release"]["release_id"],
+           "problems": problems})
+
+
+def cmd_bedreport_evidence(args: argparse.Namespace) -> None:
+    _emit(bedreport_mod.read_evidence(
+        args.release, args.section, ward=args.ward, date=args.date,
+        bed=args.bed, kind=args.kind, limit=args.limit))
+
+
+def cmd_bedload(args: argparse.Namespace) -> None:
+    if args.status:
+        _emit(bedload_mod.load_status(args.db))
+        return
+    if not args.release:
+        raise UsageError("bedload requires --release DIR (or --status)")
+    _emit(bedload_mod.load_release(args.db, args.release))
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="fhist",
                                 description="FHIR R4 offline history object store")
-    p.add_argument("--repo", required=True, help="repository root directory")
+    p.add_argument("--repo", required=False,
+                   help="repository root directory (not needed for "
+                        "bedreport show/verify/evidence or bedload)")
     sub = p.add_subparsers(dest="command", required=True)
 
     sp = sub.add_parser("init", help="create a new repository")
@@ -383,6 +451,61 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--audit-id", required=True)
     ap.add_argument("--out", help="write the report to this file instead")
     ap.set_defaults(func=cmd_audit_report)
+
+    sp = sub.add_parser("bedreport", help="bed daily-report publishing")
+    bsub = sp.add_subparsers(dest="bedreport_command", required=True)
+    bp = bsub.add_parser("publish",
+                         help="publish a day-fact partition release")
+    bp.add_argument("--source-server", required=True)
+    bp.add_argument("--tenant", required=True)
+    bp.add_argument("--cut", type=int, required=True,
+                    help="published cut to read encounters/locations at")
+    bp.add_argument("--timezone", required=True,
+                    choices=("UTC", "America/New_York"))
+    bp.add_argument("--from-date", required=True,
+                    help="first local date, YYYY-MM-DD (inclusive)")
+    bp.add_argument("--to-date", required=True,
+                    help="end local date, YYYY-MM-DD (exclusive)")
+    bp.add_argument("--calendar", required=True,
+                    help="bed-open calendar CSV: bed_id,ward_code,start,end")
+    bp.add_argument("--base-release",
+                    help="correction base: release dir, seq or release id "
+                         "of a previous release of this series")
+    bp.add_argument("--reports-root",
+                    help="delivery root (default: <repo>/bedreports)")
+    bp.set_defaults(func=cmd_bedreport_publish)
+    bp = bsub.add_parser("list", help="list series and releases")
+    bp.add_argument("--reports-root",
+                    help="delivery root (default: <repo>/bedreports)")
+    bp.set_defaults(func=cmd_bedreport_list)
+    bp = bsub.add_parser("show", help="print a release manifest")
+    bp.add_argument("--release", required=True, help="release directory")
+    bp.set_defaults(func=cmd_bedreport_show)
+    bp = bsub.add_parser("verify",
+                         help="re-verify a (possibly moved) release directory")
+    bp.add_argument("--release", required=True, help="release directory")
+    bp.set_defaults(func=cmd_bedreport_verify)
+    bp = bsub.add_parser("evidence",
+                         help="read audit evidence of a release")
+    bp.add_argument("--release", required=True, help="release directory")
+    bp.add_argument("--section", default="slices",
+                    choices=("slices", "exceptions", "unassigned", "facts"))
+    bp.add_argument("--ward", help="filter by ward_code")
+    bp.add_argument("--date", help="filter by local date YYYY-MM-DD")
+    bp.add_argument("--bed", help="filter by bed_id")
+    bp.add_argument("--kind", help="filter by kind (empty/single/conflict "
+                                   "or exception kind)")
+    bp.add_argument("--limit", type=int, default=1000)
+    bp.set_defaults(func=cmd_bedreport_evidence)
+
+    sp = sub.add_parser("bedload",
+                        help="load bed-report releases into SQLite "
+                             "(repository-independent)")
+    sp.add_argument("--db", required=True, help="target SQLite database")
+    sp.add_argument("--release", help="release directory to load")
+    sp.add_argument("--status", action="store_true",
+                    help="show loader state instead of loading")
+    sp.set_defaults(func=cmd_bedload)
     return p
 
 

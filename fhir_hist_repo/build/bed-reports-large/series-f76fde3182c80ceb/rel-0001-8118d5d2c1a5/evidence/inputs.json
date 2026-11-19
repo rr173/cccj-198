@@ -1,0 +1,13 @@
+{
+  "base_release_id": null,
+  "calendar_beds": 1500,
+  "calendar_rows": 1973,
+  "calendar_sha256": "910e0da22bc329655ce0f63af4a1551a308ec09b8dce4bec46faf4b097822298",
+  "cut_seq": 100,
+  "date_from": "2026-04-01",
+  "date_to": "2026-04-06",
+  "format": "fhist-bedreport/1",
+  "source_server": "https://fhir.example.org/largeward",
+  "tenant": "tenant-largeward",
+  "timezone": "UTC"
+}

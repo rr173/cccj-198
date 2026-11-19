@@ -1,0 +1,7 @@
+{"detail": "completed location period has no end", "encounter_id": "E6", "kind": "period_missing_end", "location_index": 0, "ref_text": "Location/bed-1", "seq": 10, "version_id": "v1"}
+{"detail": "location period has no start", "encounter_id": "E6", "kind": "period_missing_start", "location_index": 1, "ref_text": "Location/bed-1", "seq": 10, "version_id": "v1"}
+{"detail": "period start 2026-03-10T10:00:00+00:00 is not before end 2026-03-10T09:00:00+00:00", "encounter_id": "E6", "kind": "period_reversed_or_empty", "location_index": 2, "ref_text": "Location/bed-1", "seq": 10, "version_id": "v1"}
+{"detail": "expected a second-precision timestamp with timezone offset, got '2026-03-10 08:00'", "encounter_id": "E6", "kind": "period_bad_timestamp", "location_index": 3, "ref_text": "Location/bed-1", "seq": 10, "version_id": "v1"}
+{"detail": "Location/bed-9 does not exist at the cut", "encounter_id": "E6", "kind": "location_unresolvable", "location_index": 4, "ref_text": "Location/bed-9", "seq": 10, "version_id": "v1"}
+{"detail": "absolute URL is outside the configured bases", "encounter_id": "E6", "kind": "location_ref_external", "location_index": 5, "ref_text": "https://elsewhere.example.com/fhir/Location/bed-1", "seq": 10, "version_id": "v1"}
+{"detail": "versioned location references are not supported", "encounter_id": "E6", "kind": "location_ref_versioned", "location_index": 6, "ref_text": "Location/bed-1/_history/v1", "seq": 10, "version_id": "v1"}

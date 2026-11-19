@@ -1,0 +1,1 @@
+{"code":{"coding":[{"code":"29463-7","display":"Body weight","system":"http://loinc.org"}]},"focus":[{"reference":"Patient/p/_history/vA"}],"id":"o","meta":{"lastUpdated":"2026-01-10T00:00:00Z","versionId":"oV1"},"resourceType":"Observation","status":"final","subject":{"reference":"Patient/p"}}

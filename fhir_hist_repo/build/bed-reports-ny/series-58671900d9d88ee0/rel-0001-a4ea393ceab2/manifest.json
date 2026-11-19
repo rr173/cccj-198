@@ -1,0 +1,99 @@
+{
+  "delivery": {
+    "files": [
+      {
+        "path": "delivery/facts-full.ndjson",
+        "role": "full",
+        "rows": 3,
+        "sha256": "832d516a57bfece8127365c319c927363e349daf3d53bce19d04fc80b4f5af96"
+      }
+    ],
+    "full_rows": 3,
+    "kind": "initial"
+  },
+  "evidence": {
+    "files": [
+      {
+        "path": "evidence/facts-full.ndjson",
+        "role": "facts-full",
+        "rows": 3,
+        "sha256": "832d516a57bfece8127365c319c927363e349daf3d53bce19d04fc80b4f5af96"
+      },
+      {
+        "path": "evidence/slices.ndjson",
+        "role": "slices",
+        "rows": 5,
+        "sha256": "1a08236d35666b1fb2143980bf65780daa7f21ee2c0b09d27f7b2a0303c2ba88"
+      },
+      {
+        "path": "evidence/exceptions.ndjson",
+        "role": "exceptions",
+        "rows": 8,
+        "sha256": "076e0d2fcdbfccfe3bdc98ed17e297ef3c4cecb2ea79af126bda0cf6bbb5637d"
+      },
+      {
+        "path": "evidence/unassigned.ndjson",
+        "role": "unassigned",
+        "rows": 1,
+        "sha256": "8fa123463815e28beb7a8615e032405cf6f334154b500bc841a266df8908b5c3"
+      },
+      {
+        "path": "evidence/calendar.csv",
+        "role": "calendar",
+        "rows": 1,
+        "sha256": "cb0ec12315989ad187003ca05ab4424c22206e2e5a22511b23ad9c2cfe3ef4a1"
+      },
+      {
+        "path": "evidence/inputs.json",
+        "role": "inputs",
+        "rows": null,
+        "sha256": "19f29144e8cd1cff67759a3f5c30b13911d651f964174938bcab52a75537f173"
+      }
+    ]
+  },
+  "format": "fhist-bedreport/1",
+  "release": {
+    "base": null,
+    "calendar": {
+      "beds": 1,
+      "rows": 1,
+      "sha256": "cb0ec12315989ad187003ca05ab4424c22206e2e5a22511b23ad9c2cfe3ef4a1"
+    },
+    "cut_seq": 11,
+    "kind": "initial",
+    "release_id": "a4ea393ceab2fbcabb33f95dc7d78ed61b63b68ada739f6654ec866a41016119",
+    "seq": 1,
+    "target": {
+      "fact_rows": 3,
+      "facts_sha256": "791fbc99bf8dbbab251baa248879dd3d8b58dd424bc213bef08098ad4a79014d"
+    },
+    "window": {
+      "days": 3,
+      "end_utc": "2026-03-10T04:00:00+00:00",
+      "start_utc": "2026-03-07T05:00:00+00:00"
+    }
+  },
+  "series": {
+    "date_from": "2026-03-07",
+    "date_to": "2026-03-10",
+    "series_id": "58671900d9d88ee07ff22ac8561085d9594f704f6a3ca80cb311dc6381d9ab09",
+    "source_server": "https://fhir.example.org/a",
+    "tenant": "tenant-ward",
+    "timezone": "America/New_York"
+  },
+  "summary": {
+    "conflict_seconds": 0,
+    "empty_seconds": 241200,
+    "encounters_scanned": 7,
+    "exceptions": 8,
+    "fact_rows": 3,
+    "location_entries": 15,
+    "location_entries_ignored_status": 1,
+    "occupancy_intervals": 2,
+    "open_seconds": 255600,
+    "single_seconds": 14400,
+    "slices": 5,
+    "unassigned_intervals": 1,
+    "unassigned_seconds": 3600
+  }
+}

@@ -1,0 +1,1 @@
+{"code":{"coding":[{"code":"29463-7","system":"http://loinc.org"}]},"id":"r001179","meta":{"lastUpdated":"2026-09-01T00:00:00Z","versionId":"v100"},"resourceType":"Observation","status":"final","subject":{"reference":"Patient/p004"}}
