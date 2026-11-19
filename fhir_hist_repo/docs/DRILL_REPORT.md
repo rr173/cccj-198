@@ -142,7 +142,60 @@ case-cycle：cycA→cycB→cycC→cycA。`trace-path` 输出一条三跳路径�
 摄取后前沿 100→108，抽查 cut100/104/108 的最新版本与独立引擎一致。
 仓库内 36 个 NDJSON 交接文件随库保存，整体约 22 MB，可直接打包上传。
 
-## 10. 产物清单
+## 10. Profile 合规审计演练
+
+夹具由 `tools/make_ig_fixtures.py` 运行时生成（`build/ig-fixtures/`），
+核对器 `tools/check_audit.py` 不导入 `fhist`，预期 finding 表为手工维护。
+复现：`python3 -I tools/check_audit.py build`（73 项断言，留档
+`build/audit-drill-run.log`）。
+
+### 10.1 包登记
+
+* `synth-core@1.0.0`（CodeSystem×2 + 基 Patient SD）、`synth-ig@1.0.0`
+  （依赖 synth-core，含继承/choice/closed+open slicing/required binding/
+  fixed/pattern 与 unsupported 构造）、`synth-ig@2.0.0`（gender ValueSet
+  改为嵌套 include 且不再 exclude `unknown`）、歧义包组
+  （`synth-dup-a/b` 各持 `dup-sd` 的一个版本，`synth-ambig` 同时依赖）。
+* 负例全部拒绝且 status 稳定：缺依赖与自依赖环 →
+  `profile_dependency_error`；canonical 同版本异内容、包同名同版本异内容
+  → `profile_conflict`；相同内容重登记 → `already_registered` 折叠。
+
+### 10.2 主审计（synth-ig@1.0.0，cuts 30/31/32）
+
+基线 14 个资源覆盖全部结果类别；seq31 修改 `p-ok`（gender→other），
+seq32 删除 `p-del`。实测汇总与手工表逐项一致：
+
+| cut | pass | fail | unsupported | no_profile | profile_unknown | profile_type_mismatch | deleted |
+|---|---|---|---|---|---|---|---|
+| 30 | 4 | 5 | 1 | 1 | 2 | 1 | 0 |
+| 31 | 3 | 6 | 1 | 1 | 2 | 1 | 0 |
+| 32 | 2 | 6 | 1 | 1 | 2 | 1 | 1 |
+
+`memberships=41`、`unique_evaluations=15`：同一资源版本跨 cut 复用发现，
+各 cut 汇总独立正确。`p-ok` 在 cut30 为 pass（v1）、cut31 起为 fail
+（v2 内容变化）；旧 cut 报告在前沿推进后不变。
+
+### 10.3 指南版本并存与选择规则
+
+* `synth-ig@2.0.0` 登记后重跑 1.0.0 审计：`already_complete`，汇总逐字节
+  不变；同一 cut31 在 2.0.0 下 `p-excl`（gender=unknown，1.0.0 被
+  exclude）由 fail 变 pass——指南版本差异；`p-ok`（gender=other）两版
+  均 fail——资源内容差异。
+* 显式 `--root-profile`：只评估类型匹配的资源（Patient），无
+  meta.profile 的 `p-noprof` 按调用者指定根评估为 pass，Observation 全部
+  `no_profile`。
+* 歧义包审计：裸 canonical 命中两个已登记版本 → `profile_ambiguous`；
+  未登记 canonical → `profile_unknown`；均不计 pass。
+
+### 10.4 中断恢复、幂等与可重建
+
+* `--max-evaluations 3` 以退出码 3 中断（`status: interrupted`，
+  `cuts_done=[]`）；重跑同一请求续跑至完成；再次重跑
+  `already_complete` 复用存储汇总。
+* 两次 `audit report` 导出字节一致；整库 `cp -a` 迁移后导出仍一致；
+  运行中的审计也可导出（`status: running` 的部分报告）。
+
+## 11. 产物清单
 
 ```
 build/fixtures/                 合成交接包（含负例与乱序包）
@@ -153,6 +206,9 @@ build/handoff-moved/            演练后的可查询库（已迁移路径）
   sources/<hash>/packages/...   按来源坐标归档的 manifest+分片
   conflicts/                    隔离载荷副本
 build/handoff-rebuilt/          全量重建产物
-build/drill-run.log             97 项断言留档
+build/ig-fixtures/              运行时生成的 profile 包与审计历史夹具
+build/ig-handoff/               审计演练库
+build/drill-run.log             102 项断言留档
+build/audit-drill-run.log       73 项审计断言留档
 build/rebuild-run.log           重建比对留档
 ```

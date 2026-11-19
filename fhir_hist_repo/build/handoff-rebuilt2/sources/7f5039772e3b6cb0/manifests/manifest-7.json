@@ -1,0 +1,13 @@
+{
+  "format_version": 1,
+  "source_server": "https://fhir.example.org/a",
+  "tenant": "tenant-bad-baseline",
+  "aliases": [],
+  "baseline": {
+    "seq": 7,
+    "path": "baseline/b.ndjson",
+    "sha256": "49dfad22bb779da1ca2c76c1cc303a4ae11e88daf640db1d177c60fce5c69994",
+    "resource_count": 2
+  },
+  "transactions": []
+}

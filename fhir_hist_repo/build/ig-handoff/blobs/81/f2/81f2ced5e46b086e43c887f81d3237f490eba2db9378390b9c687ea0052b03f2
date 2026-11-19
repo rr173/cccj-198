@@ -1,0 +1,24 @@
+{
+  "compose": {
+    "exclude": [
+      {
+        "concept": [
+          {
+            "code": "unknown"
+          }
+        ],
+        "system": "http://synth.example.org/CodeSystem/gender-cs"
+      }
+    ],
+    "include": [
+      {
+        "system": "http://synth.example.org/CodeSystem/gender-cs"
+      }
+    ]
+  },
+  "name": "SynthGenderVS",
+  "resourceType": "ValueSet",
+  "status": "active",
+  "url": "http://synth.example.org/ValueSet/gender-vs",
+  "version": "1.0.0"
+}

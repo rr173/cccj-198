@@ -1,8 +1,13 @@
 """Command-line entry point for the FHIR R4 history object store.
 
 Subcommands: init, stage, advance, status, resource, references, trace-path,
-verify. All output is JSON on stdout; failures carry a stable ``status``
-string and a non-zero exit code. Run with ``python -I`` from any directory.
+verify, profile (register/list/show), audit (run/list/status/findings/report).
+All output is JSON on stdout; failures carry a stable ``status`` string and a
+non-zero exit code. Run with ``python -I`` from any directory.
+
+Exit codes: 0 = success (a completed audit with findings is still a
+success), 2 = operational/usage error, 3 = audit run interrupted and
+resumable.
 """
 
 from __future__ import annotations
@@ -21,7 +26,8 @@ _SRC = _HERE.parents[1]
 if str(_SRC) not in sys.path:
     sys.path.insert(0, str(_SRC))
 
-from fhist import ingest, query, status as status_mod  # noqa: E402
+from fhist import audit as audit_mod  # noqa: E402
+from fhist import ingest, profiles, query, status as status_mod  # noqa: E402
 from fhist.config import RepoConfig  # noqa: E402
 from fhist.db import connect, initialise  # noqa: E402
 from fhist.errors import FHError  # noqa: E402
@@ -183,6 +189,97 @@ def _hold(seconds: float) -> None:
         time.sleep(min(0.05, end - time.monotonic()))
 
 
+# ---------------------------------------------------------------------------
+# Profile packages and audits
+# ---------------------------------------------------------------------------
+
+def cmd_profile_register(args: argparse.Namespace) -> None:
+    paths, _config, conn = _open_repo(args)
+    try:
+        _emit(profiles.register_package(paths, conn, args.package_dir))
+    finally:
+        conn.close()
+
+
+def cmd_profile_list(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        _emit({"status": "ok", "packages": profiles.list_packages(conn)})
+    finally:
+        conn.close()
+
+
+def cmd_profile_show(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        out = profiles.show_package(conn, args.package)
+        out["status"] = "ok"
+        _emit(out)
+    finally:
+        conn.close()
+
+
+def cmd_audit_run(args: argparse.Namespace) -> int:
+    paths, _config, conn = _open_repo(args)
+    try:
+        source = query.load_source(conn, args.source_server, args.tenant)
+        payload, rc = audit_mod.run_audit(
+            paths, conn, source, args.cut, args.package,
+            args.root_profile, max_evaluations=args.max_evaluations)
+        _emit(payload)
+        return rc
+    finally:
+        conn.close()
+
+
+def cmd_audit_list(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        _emit({"status": "ok", "audits": audit_mod.list_audits(conn)})
+    finally:
+        conn.close()
+
+
+def cmd_audit_status(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        _emit(audit_mod.audit_status(conn, args.audit_id))
+    finally:
+        conn.close()
+
+
+def cmd_audit_findings(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        report = audit_mod.build_report(conn, args.audit_id, cut=args.cut,
+                                        result=args.result)
+        _emit({
+            "status": "ok",
+            "audit_id": report["audit_id"],
+            "state": report["status"],
+            "resources": report["resources"],
+        })
+    finally:
+        conn.close()
+
+
+def cmd_audit_report(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        report = audit_mod.build_report(conn, args.audit_id)
+        if args.out:
+            Path(args.out).write_text(
+                json.dumps(report, ensure_ascii=False, indent=2,
+                           sort_keys=True) + "\n",
+                encoding="utf-8")
+            _emit({"status": "exported", "audit_id": report["audit_id"],
+                   "out": args.out})
+        else:
+            _emit(report)
+    finally:
+        conn.close()
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="fhist",
                                 description="FHIR R4 offline history object store")
@@ -242,6 +339,50 @@ def build_parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("verify", help="verify stored body digests")
     sp.set_defaults(func=cmd_verify)
+
+    sp = sub.add_parser("profile", help="profile package registry")
+    psub = sp.add_subparsers(dest="profile_command", required=True)
+    pp = psub.add_parser("register", help="register a local profile package")
+    pp.add_argument("--package-dir", required=True,
+                    help="directory with package.json + conformance JSON")
+    pp.set_defaults(func=cmd_profile_register)
+    pp = psub.add_parser("list", help="list registered profile packages")
+    pp.set_defaults(func=cmd_profile_list)
+    pp = psub.add_parser("show", help="show one registered package")
+    pp.add_argument("--package", required=True,
+                    help="package digest or name:version")
+    pp.set_defaults(func=cmd_profile_show)
+
+    sp = sub.add_parser("audit", help="profile-compliance audits over cuts")
+    asub = sp.add_subparsers(dest="audit_command", required=True)
+    ap = asub.add_parser("run", help="run or resume an audit")
+    ap.add_argument("--source-server", required=True)
+    ap.add_argument("--tenant", required=True)
+    ap.add_argument("--cut", type=int, required=True, action="append",
+                    help="published cut to audit; repeatable")
+    ap.add_argument("--package", required=True,
+                    help="profile package digest or name:version")
+    ap.add_argument("--root-profile", action="append", default=None,
+                    help="explicit audit root profile canonical[|version]; "
+                         "repeatable. Default: select via meta.profile")
+    ap.add_argument("--max-evaluations", type=int, default=None,
+                    help="test hook: stop after N new evaluations (exit 3)")
+    ap.set_defaults(func=cmd_audit_run)
+    ap = asub.add_parser("list", help="list audit runs")
+    ap.set_defaults(func=cmd_audit_list)
+    ap = asub.add_parser("status", help="show audit run state/progress")
+    ap.add_argument("--audit-id", required=True)
+    ap.set_defaults(func=cmd_audit_status)
+    ap = asub.add_parser("findings", help="per-resource findings of an audit")
+    ap.add_argument("--audit-id", required=True)
+    ap.add_argument("--cut", type=int, default=None)
+    ap.add_argument("--result", default=None,
+                    help="filter by result (pass/fail/unsupported/...)")
+    ap.set_defaults(func=cmd_audit_findings)
+    ap = asub.add_parser("report", help="export the deterministic JSON report")
+    ap.add_argument("--audit-id", required=True)
+    ap.add_argument("--out", help="write the report to this file instead")
+    ap.set_defaults(func=cmd_audit_report)
     return p
 
 
@@ -249,8 +390,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
-        args.func(args)
-        return 0
+        result = args.func(args)
+        return result if isinstance(result, int) else 0
     except FHError as exc:
         _emit({"status": exc.status, "error": str(exc)})
         return 2

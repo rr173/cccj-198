@@ -1,0 +1,58 @@
+{
+  "abstract": false,
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Observation",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Observation",
+        "path": "Observation"
+      },
+      {
+        "fixedCode": "final",
+        "id": "Observation.status",
+        "path": "Observation.status"
+      },
+      {
+        "id": "Observation.subject",
+        "path": "Observation.subject",
+        "type": [
+          {
+            "code": "Reference",
+            "targetProfile": [
+              "http://synth.example.org/StructureDefinition/synth-patient"
+            ]
+          }
+        ]
+      },
+      {
+        "constraint": [
+          {
+            "expression": "effectiveDateTime <= now()",
+            "human": "must be in the past",
+            "key": "synth-1",
+            "severity": "error"
+          }
+        ],
+        "id": "Observation.effective[x]",
+        "path": "Observation.effective[x]"
+      },
+      {
+        "binding": {
+          "strength": "required",
+          "valueSet": "http://synth.example.org/ValueSet/category-vs"
+        },
+        "id": "Observation.category",
+        "min": 1,
+        "path": "Observation.category"
+      }
+    ]
+  },
+  "kind": "resource",
+  "name": "SynthObservationStrict",
+  "resourceType": "StructureDefinition",
+  "status": "active",
+  "type": "Observation",
+  "url": "http://synth.example.org/StructureDefinition/synth-observation-strict",
+  "version": "1.0.0"
+}

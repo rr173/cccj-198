@@ -1,0 +1,25 @@
+{
+  "abstract": false,
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Patient",
+  "derivation": "constraint",
+  "differential": {
+    "element": [
+      {
+        "id": "Patient",
+        "path": "Patient"
+      },
+      {
+        "id": "Patient.name",
+        "min": 1,
+        "path": "Patient.name"
+      }
+    ]
+  },
+  "kind": "resource",
+  "name": "DupSd",
+  "resourceType": "StructureDefinition",
+  "status": "active",
+  "type": "Patient",
+  "url": "http://synth.example.org/StructureDefinition/dup-sd",
+  "version": "2.0.0"
+}

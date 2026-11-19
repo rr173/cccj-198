@@ -1,0 +1,13 @@
+{
+  "concept": [
+    {
+      "code": "male"
+    }
+  ],
+  "content": "complete",
+  "name": "gender_cs",
+  "resourceType": "CodeSystem",
+  "status": "active",
+  "url": "http://synth.example.org/CodeSystem/gender-cs",
+  "version": "1.0.0"
+}

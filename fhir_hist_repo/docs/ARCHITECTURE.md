@@ -17,6 +17,9 @@
 | `cuts` | 已发布的完整 cut 序列 | 只插入 |
 | `isolated_conflicts` | 被隔离的异载荷重传/坏事务载荷与原因 | 只插入 |
 | `events` | 摄取时间线（审计） | 只追加 |
+| `profile_packages` / `profile_package_files` / `profile_canonicals` | 已登记 IG 包身份、文件摘要与 canonical 注册表 | 只插入；冲突即拒绝 |
+| `audit_runs` / `audit_members` / `audit_deleted` / `audit_cut_progress` | 审计运行状态与逐 cut 成员 | 运行单调推进，完成后不再变 |
+| `eval_cache` | 按 `(包digest, 根profile, 资源版本, body digest)` 键控的评估发现 | 只插入 |
 
 关键约束：
 

@@ -1,0 +1,62 @@
+{
+  "abstract": false,
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Observation",
+  "derivation": "constraint",
+  "kind": "resource",
+  "name": "SynthObservationTyped",
+  "resourceType": "StructureDefinition",
+  "snapshot": {
+    "element": [
+      {
+        "id": "Observation",
+        "path": "Observation"
+      },
+      {
+        "fixedCode": "final",
+        "id": "Observation.status",
+        "path": "Observation.status"
+      },
+      {
+        "id": "Observation.value[x]",
+        "path": "Observation.value[x]",
+        "slicing": {
+          "discriminator": [
+            {
+              "path": "$this",
+              "type": "type"
+            }
+          ],
+          "rules": "closed"
+        }
+      },
+      {
+        "id": "Observation.value[x]:valueQuantity",
+        "max": "1",
+        "min": 0,
+        "path": "Observation.value[x]",
+        "sliceName": "valueQuantity",
+        "type": [
+          {
+            "code": "Quantity"
+          }
+        ]
+      },
+      {
+        "id": "Observation.value[x]:valueString",
+        "max": "1",
+        "min": 0,
+        "path": "Observation.value[x]",
+        "sliceName": "valueString",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      }
+    ]
+  },
+  "status": "active",
+  "type": "Observation",
+  "url": "http://synth.example.org/StructureDefinition/synth-observation-typed",
+  "version": "2.0.0"
+}

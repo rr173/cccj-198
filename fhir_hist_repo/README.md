@@ -16,7 +16,7 @@ FHIR R4 历史对象仓。
 fhir_hist_repo/
 ├── src/fhist/            # 正式实现（摄取、存储、解析、查询、CLI）
 │   ├── cli.py            # 命令入口：init/stage/advance/status/resource/
-│   │                     #         references/trace-path/verify
+│   │                     #         references/trace-path/verify/profile/audit
 │   ├── config.py         # 规范基址与显式等价别名
 │   ├── paths.py          # 可重定位布局 + 内容寻址 blob 路径
 │   ├── db.py             # SQLite schema、WAL、写事务/快照读事务
@@ -28,17 +28,23 @@ fhir_hist_repo/
 │   ├── refs.py           # Reference 抽取与结构分类（含 contained 作用域）
 │   ├── resolver.py       # cut 时点解析，七种状态
 │   ├── query.py          # 当前/版本/历史读取、上下游、trace-path
-│   └── status.py         # 状态汇总
+│   ├── status.py         # 状态汇总
+│   ├── igmodel.py        # IG 模型：SD 继承合并、ValueSet 展开（纯内存）
+│   ├── profiles.py       # profile 包登记、canonical 唯一性、依赖闭包
+│   └── audit.py          # 合规审计：评估引擎、可恢复运行、确定性报告
 ├── bin/fhist             # python -I 启动壳
 ├── tools/
 │   ├── make_fixtures.py      # 合成夹具生成（主演练 + 负例）
 │   ├── make_followup.py      # seq13 后续包（并发演练）
 │   ├── make_conflict_case.py # conflict 解析状态可见性夹具
 │   ├── large_history.py      # 大历史流式生成器（单资源可大、整包不常驻）
+│   ├── make_ig_fixtures.py   # profile 包 + 审计历史夹具（运行时生成）
 │   ├── check.py              # 独立核对器（不 import 正式解析器）
+│   ├── check_audit.py        # 审计独立核对器（手工预期 finding 表）
 │   └── rebuild.py            # 从归档包全量重建并逐 cut 比对
 └── docs/
     ├── ARCHITECTURE.md
+    ├── PROFILE_AUDIT.md      # 约束子集、选择优先级、审计边界、恢复语义
     └── DRILL_REPORT.md
 ```
 
@@ -74,11 +80,32 @@ bin/fhist --repo ./handoff trace-path ... --resource-type X --id y
 所有输出均为 stdout 上的 JSON；失败带稳定 `status` 字符串与非零退出码，
 适合脚本编排与中途退出后重开。
 
-## 3. 一键演练
+## 3. Profile 合规审计
+
+对已发布 cut 中现存资源按本地登记的实施指南逐资源评估（详见
+[docs/PROFILE_AUDIT.md](docs/PROFILE_AUDIT.md)）：
+
+```bash
+# 登记本地 profile 包（package.json + SD/ValueSet/CodeSystem，只读本地文件）
+bin/fhist --repo ./handoff profile register --package-dir /path/to/ig-pkg
+bin/fhist --repo ./handoff profile list
+
+# 对一个或多个已发布 cut 运行/恢复审计（相同请求幂等复用）
+bin/fhist --repo ./handoff audit run --source-server S --tenant T \
+  --cut 10 --cut 11 --package synth-ig:1.0.0
+bin/fhist --repo ./handoff audit findings --audit-id <id> --cut 11
+bin/fhist --repo ./handoff audit report   --audit-id <id> --out report.json
+```
+
+退出码：0 = 成功（含审计完成但存在 fail finding）；2 = 操作/用法错误；
+3 = 审计中断、可重跑恢复。
+
+## 4. 一键演练
 
 ```bash
 python3 -I tools/make_fixtures.py build/fixtures
 python3 -I tools/check.py build
+python3 -I tools/check_audit.py build   # profile 审计演练（夹具运行时生成）
 ```
 
 核对器**不导入** `fhist` 解析代码：它仅通过 CLI 驱动正式库，自己用标准库

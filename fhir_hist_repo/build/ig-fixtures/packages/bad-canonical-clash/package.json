@@ -1,0 +1,8 @@
+{
+  "dependencies": {},
+  "fhirVersions": [
+    "4.0.1"
+  ],
+  "name": "synth-clash",
+  "version": "1.0.0"
+}

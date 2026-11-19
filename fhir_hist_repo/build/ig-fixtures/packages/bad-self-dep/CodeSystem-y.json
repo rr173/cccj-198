@@ -1,0 +1,13 @@
+{
+  "concept": [
+    {
+      "code": "b"
+    }
+  ],
+  "content": "complete",
+  "name": "y_cs",
+  "resourceType": "CodeSystem",
+  "status": "active",
+  "url": "http://synth.example.org/CodeSystem/y-cs",
+  "version": "1.0.0"
+}

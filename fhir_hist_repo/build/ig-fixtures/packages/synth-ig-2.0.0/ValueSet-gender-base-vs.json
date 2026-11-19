@@ -1,0 +1,14 @@
+{
+  "compose": {
+    "include": [
+      {
+        "system": "http://synth.example.org/CodeSystem/gender-cs"
+      }
+    ]
+  },
+  "name": "SynthGenderBaseVS",
+  "resourceType": "ValueSet",
+  "status": "active",
+  "url": "http://synth.example.org/ValueSet/gender-base-vs",
+  "version": "2.0.0"
+}

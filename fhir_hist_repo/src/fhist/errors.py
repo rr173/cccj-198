@@ -66,3 +66,36 @@ class RepoLocked(FHError):
     """Another writer holds the repository; the operation may be retried."""
 
     status = "locked"
+
+
+class ProfilePackageError(FHError):
+    """A profile package directory is malformed or fails validation."""
+
+    status = "profile_package_error"
+
+
+class ProfileConflict(FHError):
+    """A package name+version or canonical+version clashes with other content.
+
+    Never silently overwritten: the conflicting registration is rejected.
+    """
+
+    status = "profile_conflict"
+
+
+class ProfileDependencyError(FHError):
+    """Package dependencies are missing or form a cycle."""
+
+    status = "profile_dependency_error"
+
+
+class UnknownPackage(FHError):
+    """An audit referenced a profile package that is not registered."""
+
+    status = "unknown_package"
+
+
+class UnknownAudit(FHError):
+    """The requested audit id does not exist in this repository."""
+
+    status = "unknown_audit"

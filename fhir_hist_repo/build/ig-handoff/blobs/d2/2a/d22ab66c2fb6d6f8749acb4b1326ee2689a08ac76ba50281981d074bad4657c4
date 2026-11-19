@@ -1,0 +1,16 @@
+{
+  "concept": [
+    {
+      "code": "sys"
+    },
+    {
+      "code": "dia"
+    }
+  ],
+  "content": "complete",
+  "name": "obs_comp_cs",
+  "resourceType": "CodeSystem",
+  "status": "active",
+  "url": "http://synth.example.org/CodeSystem/obs-comp-cs",
+  "version": "1.0.0"
+}

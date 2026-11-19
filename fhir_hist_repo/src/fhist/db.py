@@ -151,6 +151,98 @@ CREATE TABLE IF NOT EXISTS events (
 );
 """
 
+# Profile-package registry and audit state. These tables are additive: they
+# never reference or mutate the ingest fact tables, and old repositories gain
+# them lazily via :func:`ensure_audit_schema`.
+AUDIT_SCHEMA = """
+CREATE TABLE IF NOT EXISTS profile_packages (
+    package_digest   TEXT PRIMARY KEY,
+    name             TEXT NOT NULL,
+    version          TEXT NOT NULL,
+    fhir_versions    TEXT NOT NULL DEFAULT '[]',
+    dependencies     TEXT NOT NULL DEFAULT '{}',
+    file_count       INTEGER NOT NULL,
+    canonical_count  INTEGER NOT NULL,
+    registered_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_profile_pkg_name_version
+    ON profile_packages(name, version);
+
+CREATE TABLE IF NOT EXISTS profile_package_files (
+    package_digest   TEXT NOT NULL REFERENCES profile_packages(package_digest),
+    relpath          TEXT NOT NULL,
+    sha256           TEXT NOT NULL,
+    blob_relpath     TEXT NOT NULL,
+    PRIMARY KEY (package_digest, relpath)
+);
+
+CREATE TABLE IF NOT EXISTS profile_canonicals (
+    canonical        TEXT NOT NULL,
+    version          TEXT NOT NULL,
+    kind             TEXT NOT NULL
+        CHECK (kind IN ('StructureDefinition','ValueSet','CodeSystem')),
+    package_digest   TEXT NOT NULL REFERENCES profile_packages(package_digest),
+    file_relpath     TEXT NOT NULL,
+    content_digest   TEXT NOT NULL,
+    PRIMARY KEY (canonical, version)
+);
+CREATE INDEX IF NOT EXISTS idx_profile_canonicals_pkg
+    ON profile_canonicals(package_digest);
+
+CREATE TABLE IF NOT EXISTS audit_runs (
+    audit_id         TEXT PRIMARY KEY,
+    request_json     TEXT NOT NULL,
+    source_id        INTEGER NOT NULL REFERENCES sources(source_id),
+    package_digest   TEXT NOT NULL REFERENCES profile_packages(package_digest),
+    state            TEXT NOT NULL CHECK (state IN ('running','complete')),
+    frontier_at_start INTEGER NOT NULL,
+    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+    completed_at     TEXT,
+    summary_json     TEXT
+);
+
+CREATE TABLE IF NOT EXISTS eval_cache (
+    cache_key        TEXT PRIMARY KEY,
+    package_digest   TEXT NOT NULL,
+    roots_key        TEXT NOT NULL,
+    source_id        INTEGER NOT NULL,
+    resource_type    TEXT NOT NULL,
+    logical_id       TEXT NOT NULL,
+    version_id       TEXT NOT NULL,
+    body_digest      TEXT NOT NULL,
+    result           TEXT NOT NULL,
+    selected_json    TEXT NOT NULL,
+    findings_json    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_eval_cache_version
+    ON eval_cache(source_id, resource_type, logical_id, version_id);
+
+CREATE TABLE IF NOT EXISTS audit_members (
+    audit_id         TEXT NOT NULL REFERENCES audit_runs(audit_id),
+    cut_seq          INTEGER NOT NULL,
+    cache_key        TEXT NOT NULL REFERENCES eval_cache(cache_key),
+    PRIMARY KEY (audit_id, cut_seq, cache_key)
+);
+
+CREATE TABLE IF NOT EXISTS audit_deleted (
+    audit_id         TEXT NOT NULL REFERENCES audit_runs(audit_id),
+    cut_seq          INTEGER NOT NULL,
+    resource_type    TEXT NOT NULL,
+    logical_id       TEXT NOT NULL,
+    version_id       TEXT NOT NULL,
+    PRIMARY KEY (audit_id, cut_seq, resource_type, logical_id)
+);
+
+CREATE TABLE IF NOT EXISTS audit_cut_progress (
+    audit_id         TEXT NOT NULL REFERENCES audit_runs(audit_id),
+    cut_seq          INTEGER NOT NULL,
+    member_count     INTEGER NOT NULL,
+    deleted_count    INTEGER NOT NULL,
+    done_at          TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (audit_id, cut_seq)
+);
+"""
+
 
 def connect(db_path: str | Path) -> sqlite3.Connection:
     conn = sqlite3.connect(
@@ -171,6 +263,18 @@ def connect(db_path: str | Path) -> sqlite3.Connection:
 def initialise(conn: sqlite3.Connection) -> None:
     try:
         conn.executescript(SCHEMA)
+        conn.executescript(AUDIT_SCHEMA)
+    except sqlite3.OperationalError as exc:
+        if "locked" in str(exc).lower():
+            raise RepoLocked(str(exc)) from exc
+        raise
+
+
+def ensure_audit_schema(conn: sqlite3.Connection) -> None:
+    """Lazily add profile/audit tables to repositories created before them."""
+
+    try:
+        conn.executescript(AUDIT_SCHEMA)
     except sqlite3.OperationalError as exc:
         if "locked" in str(exc).lower():
             raise RepoLocked(str(exc)) from exc

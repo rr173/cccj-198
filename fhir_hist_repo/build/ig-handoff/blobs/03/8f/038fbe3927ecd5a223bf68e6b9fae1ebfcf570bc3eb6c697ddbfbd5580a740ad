@@ -1,0 +1,1 @@
+{"active":true,"gender":"male","id":"p-names","identifier":[{"system":"http://synth.example.org/mrn","value":"MRN-p-names"}],"meta":{"lastUpdated":"2026-01-10T00:00:00Z","profile":["http://synth.example.org/StructureDefinition/synth-patient"],"versionId":"v1"},"name":[{"family":"One"},{"family":"Two"},{"family":"Three"},{"family":"Four"}],"resourceType":"Patient"}

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "synth-core": "1.0.0"
+  },
+  "fhirVersions": [
+    "4.0.1"
+  ],
+  "name": "synth-ig",
+  "version": "1.0.0"
+}

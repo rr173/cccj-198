@@ -1,0 +1,1671 @@
+{
+  "audit_id": "b39905f38e9b2c92514f6e184e89df2f1cf9b1d8eb72dd1d9a9af8af8776f536",
+  "deleted": [
+    {
+      "cut_seq": 32,
+      "id": "p-del",
+      "resourceType": "Patient",
+      "versionId": "v2"
+    }
+  ],
+  "frontier_at_start": 32,
+  "request": {
+    "cuts": [
+      30,
+      31,
+      32
+    ],
+    "format": 1,
+    "package": "synth-ig@1.0.0",
+    "package_digest": "3abc32065e31589582ff128321edcf45121d166328926fcf79c18e0aa6b0f5fa",
+    "root_profiles": [],
+    "source_server": "https://fhir.example.org/ig",
+    "tenant": "tenant-ig"
+  },
+  "resources": [
+    {
+      "body_digest": "bb902fdcd304b6724c967054519434ee03f936c8fd19b57e959079b81f3f971c",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": {
+            "coding": [
+              {
+                "code": "8480-6",
+                "system": "http://other.example.org/x"
+              }
+            ]
+          },
+          "code": "pattern_mismatch",
+          "element_id": "Observation.code",
+          "expected": {
+            "coding": [
+              {
+                "system": "http://loinc.org"
+              }
+            ]
+          },
+          "message": "value must contain pattern patternCodeableConcept",
+          "path": "$.code",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "code": {
+              "coding": [
+                {
+                  "code": "zzz",
+                  "system": "http://x.example.org/c"
+                }
+              ]
+            },
+            "valueString": "?"
+          },
+          "code": "slice_unmatched",
+          "element_id": "Observation.component",
+          "expected": {
+            "slices": [
+              "sys",
+              "dia"
+            ]
+          },
+          "message": "item matches no slice of the closed slicing at Observation.component",
+          "path": "$.component[1]",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "slice_min",
+          "element_id": "Observation.component:sys",
+          "expected": {
+            "min": 1,
+            "slice": "sys"
+          },
+          "message": "slice 'sys': 0 item(s), minimum 1",
+          "path": "Observation.component",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": "preliminary",
+          "code": "fixed_mismatch",
+          "element_id": "Observation.status",
+          "expected": "final",
+          "message": "value must equal fixedCode",
+          "path": "$.status",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "choice": "valueString",
+            "type": "String"
+          },
+          "code": "choice_type_not_allowed",
+          "element_id": "Observation.value[x]",
+          "expected": {
+            "types": [
+              "Quantity"
+            ]
+          },
+          "message": "choice 'valueString' is not one of the allowed types ['Quantity']",
+          "path": "$.valueString",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "o-bad",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "7d8fceda1592829979eb5e4fa08b02cd0198d87a122eeb30e8716a5022d2273b",
+      "cut_seq": 30,
+      "findings": [],
+      "identity": {
+        "id": "o-ok",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "a34a7b4e86d1845c8e22b4b6d6e7fddee56efb20c6c31185da4afb1c191504fb",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "code": "unsupported_valueset_filter",
+          "element_id": "Observation.category",
+          "message": "ValueSet compose filters need terminology reasoning that is not available offline",
+          "path": "Observation.category",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        },
+        {
+          "actual": {
+            "expressions": [
+              "effectiveDateTime <= now()"
+            ]
+          },
+          "code": "unsupported_fhirpath_constraint",
+          "element_id": "Observation.effective[x]",
+          "message": "FHIRPath constraint(s) are not evaluated by this audit",
+          "path": "Observation.effective[x]",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        },
+        {
+          "actual": {
+            "profiles": [
+              "http://synth.example.org/StructureDefinition/synth-patient"
+            ]
+          },
+          "code": "unsupported_target_profile",
+          "element_id": "Observation.subject",
+          "message": "type profile / Reference targetProfile constraints are not evaluated by this audit",
+          "path": "Observation.subject",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "o-strict",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "unsupported",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "f0a2817fae813303481c83acc220f9401cc4c2edb200515bf3f182a2c5f71ace",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": {
+            "start": "2026-01-01"
+          },
+          "code": "slice_unmatched",
+          "element_id": "Observation.value[x]",
+          "expected": {
+            "slices": [
+              "valueQuantity",
+              "valueString"
+            ]
+          },
+          "message": "item matches no slice of the closed slicing at Observation.value[x]",
+          "path": "$.valuePeriod",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "o-typed-bad",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "fbbdc4f94267102d6d6737db75f20b9dfc4511267767187a07ba029d91038e29",
+      "cut_seq": 30,
+      "findings": [],
+      "identity": {
+        "id": "o-typed-ok",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "2774cc766d5087017e7e883ca9a00e04f4a3fa4dc33208aea5ab8c724799cdd1",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/synth-patient",
+          "code": "profile_type_mismatch",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/synth-patient' constrains Patient, not Observation",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "o-wrongtype",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_type_mismatch",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "f7ded54e2dd2feb6537e9a48245a336d956c89fbc74d9d709b7fbea94221df1e",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/dup-sd",
+          "code": "profile_unknown",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/dup-sd' is not in the registered package closure",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "p-ambig",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_unknown",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "13860b60f9a115858338ef1697dd7dcfe71ad61e261ee021c89c49df7d10b25d",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": false,
+          "code": "fixed_mismatch",
+          "element_id": "Patient.active",
+          "expected": true,
+          "message": "value must equal fixedBoolean",
+          "path": "$.active",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "other",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "slice_min",
+          "element_id": "Patient.identifier:mrn",
+          "expected": {
+            "min": 1,
+            "slice": "mrn"
+          },
+          "message": "slice 'mrn': 0 item(s), minimum 1",
+          "path": "Patient.identifier",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "min_cardinality",
+          "element_id": "Patient.name",
+          "expected": {
+            "min": 1
+          },
+          "message": "Patient.name: 0 item(s) present, minimum is 1",
+          "path": "Patient.name",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-bad",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "0b87ce8bc023ae5b68e17ae8ad293fb9bf7138ec8305408b897ed221eb6ce7aa",
+      "cut_seq": 30,
+      "findings": [],
+      "identity": {
+        "id": "p-del",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "c821376917464d776646237fb4e8e936c88ba27f29325d70f4f3b51b7dd36747",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "unknown",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-excl",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "038fbe3927ecd5a223bf68e6b9fae1ebfcf570bc3eb6c697ddbfbd5580a740ad",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": {
+            "count": 4
+          },
+          "code": "max_cardinality",
+          "element_id": "Patient.name",
+          "expected": {
+            "max": 3
+          },
+          "message": "Patient.name: 4 item(s) present, maximum is 3",
+          "path": "Patient.name",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-names",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "d77255e839d0aca84baa647dbab72d1009f978dfabfe86d911bc82c7344132a5",
+      "cut_seq": 30,
+      "findings": [],
+      "identity": {
+        "id": "p-noprof",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "no_profile",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "b4c5c0afd0008746904ee17816156a75e9177e1bd1cfa1ad69688febe391f3fa",
+      "cut_seq": 30,
+      "findings": [],
+      "identity": {
+        "id": "p-ok",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "27abca8aed4280790117c92450a7d85d97f3f9f1e9c0237e5edc8e0548756c7e",
+      "cut_seq": 30,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/ghost|9.9.9",
+          "code": "profile_unknown",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/ghost|9.9.9' is not in the registered package closure",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "p-unknown",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_unknown",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "bb902fdcd304b6724c967054519434ee03f936c8fd19b57e959079b81f3f971c",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": {
+            "coding": [
+              {
+                "code": "8480-6",
+                "system": "http://other.example.org/x"
+              }
+            ]
+          },
+          "code": "pattern_mismatch",
+          "element_id": "Observation.code",
+          "expected": {
+            "coding": [
+              {
+                "system": "http://loinc.org"
+              }
+            ]
+          },
+          "message": "value must contain pattern patternCodeableConcept",
+          "path": "$.code",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "code": {
+              "coding": [
+                {
+                  "code": "zzz",
+                  "system": "http://x.example.org/c"
+                }
+              ]
+            },
+            "valueString": "?"
+          },
+          "code": "slice_unmatched",
+          "element_id": "Observation.component",
+          "expected": {
+            "slices": [
+              "sys",
+              "dia"
+            ]
+          },
+          "message": "item matches no slice of the closed slicing at Observation.component",
+          "path": "$.component[1]",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "slice_min",
+          "element_id": "Observation.component:sys",
+          "expected": {
+            "min": 1,
+            "slice": "sys"
+          },
+          "message": "slice 'sys': 0 item(s), minimum 1",
+          "path": "Observation.component",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": "preliminary",
+          "code": "fixed_mismatch",
+          "element_id": "Observation.status",
+          "expected": "final",
+          "message": "value must equal fixedCode",
+          "path": "$.status",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "choice": "valueString",
+            "type": "String"
+          },
+          "code": "choice_type_not_allowed",
+          "element_id": "Observation.value[x]",
+          "expected": {
+            "types": [
+              "Quantity"
+            ]
+          },
+          "message": "choice 'valueString' is not one of the allowed types ['Quantity']",
+          "path": "$.valueString",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "o-bad",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "7d8fceda1592829979eb5e4fa08b02cd0198d87a122eeb30e8716a5022d2273b",
+      "cut_seq": 31,
+      "findings": [],
+      "identity": {
+        "id": "o-ok",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "a34a7b4e86d1845c8e22b4b6d6e7fddee56efb20c6c31185da4afb1c191504fb",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "code": "unsupported_valueset_filter",
+          "element_id": "Observation.category",
+          "message": "ValueSet compose filters need terminology reasoning that is not available offline",
+          "path": "Observation.category",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        },
+        {
+          "actual": {
+            "expressions": [
+              "effectiveDateTime <= now()"
+            ]
+          },
+          "code": "unsupported_fhirpath_constraint",
+          "element_id": "Observation.effective[x]",
+          "message": "FHIRPath constraint(s) are not evaluated by this audit",
+          "path": "Observation.effective[x]",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        },
+        {
+          "actual": {
+            "profiles": [
+              "http://synth.example.org/StructureDefinition/synth-patient"
+            ]
+          },
+          "code": "unsupported_target_profile",
+          "element_id": "Observation.subject",
+          "message": "type profile / Reference targetProfile constraints are not evaluated by this audit",
+          "path": "Observation.subject",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "o-strict",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "unsupported",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "f0a2817fae813303481c83acc220f9401cc4c2edb200515bf3f182a2c5f71ace",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": {
+            "start": "2026-01-01"
+          },
+          "code": "slice_unmatched",
+          "element_id": "Observation.value[x]",
+          "expected": {
+            "slices": [
+              "valueQuantity",
+              "valueString"
+            ]
+          },
+          "message": "item matches no slice of the closed slicing at Observation.value[x]",
+          "path": "$.valuePeriod",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "o-typed-bad",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "fbbdc4f94267102d6d6737db75f20b9dfc4511267767187a07ba029d91038e29",
+      "cut_seq": 31,
+      "findings": [],
+      "identity": {
+        "id": "o-typed-ok",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "2774cc766d5087017e7e883ca9a00e04f4a3fa4dc33208aea5ab8c724799cdd1",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/synth-patient",
+          "code": "profile_type_mismatch",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/synth-patient' constrains Patient, not Observation",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "o-wrongtype",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_type_mismatch",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "f7ded54e2dd2feb6537e9a48245a336d956c89fbc74d9d709b7fbea94221df1e",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/dup-sd",
+          "code": "profile_unknown",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/dup-sd' is not in the registered package closure",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "p-ambig",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_unknown",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "13860b60f9a115858338ef1697dd7dcfe71ad61e261ee021c89c49df7d10b25d",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": false,
+          "code": "fixed_mismatch",
+          "element_id": "Patient.active",
+          "expected": true,
+          "message": "value must equal fixedBoolean",
+          "path": "$.active",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "other",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "slice_min",
+          "element_id": "Patient.identifier:mrn",
+          "expected": {
+            "min": 1,
+            "slice": "mrn"
+          },
+          "message": "slice 'mrn': 0 item(s), minimum 1",
+          "path": "Patient.identifier",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "min_cardinality",
+          "element_id": "Patient.name",
+          "expected": {
+            "min": 1
+          },
+          "message": "Patient.name: 0 item(s) present, minimum is 1",
+          "path": "Patient.name",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-bad",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "0b87ce8bc023ae5b68e17ae8ad293fb9bf7138ec8305408b897ed221eb6ce7aa",
+      "cut_seq": 31,
+      "findings": [],
+      "identity": {
+        "id": "p-del",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "c821376917464d776646237fb4e8e936c88ba27f29325d70f4f3b51b7dd36747",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "unknown",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-excl",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "038fbe3927ecd5a223bf68e6b9fae1ebfcf570bc3eb6c697ddbfbd5580a740ad",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": {
+            "count": 4
+          },
+          "code": "max_cardinality",
+          "element_id": "Patient.name",
+          "expected": {
+            "max": 3
+          },
+          "message": "Patient.name: 4 item(s) present, maximum is 3",
+          "path": "Patient.name",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-names",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "d77255e839d0aca84baa647dbab72d1009f978dfabfe86d911bc82c7344132a5",
+      "cut_seq": 31,
+      "findings": [],
+      "identity": {
+        "id": "p-noprof",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "no_profile",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "e70aba20ade3b4a7c0957494ccec0d4519f0f031c9f59b6a0b547620792ebba1",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "other",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-ok",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v2"
+    },
+    {
+      "body_digest": "27abca8aed4280790117c92450a7d85d97f3f9f1e9c0237e5edc8e0548756c7e",
+      "cut_seq": 31,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/ghost|9.9.9",
+          "code": "profile_unknown",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/ghost|9.9.9' is not in the registered package closure",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "p-unknown",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_unknown",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "bb902fdcd304b6724c967054519434ee03f936c8fd19b57e959079b81f3f971c",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": {
+            "coding": [
+              {
+                "code": "8480-6",
+                "system": "http://other.example.org/x"
+              }
+            ]
+          },
+          "code": "pattern_mismatch",
+          "element_id": "Observation.code",
+          "expected": {
+            "coding": [
+              {
+                "system": "http://loinc.org"
+              }
+            ]
+          },
+          "message": "value must contain pattern patternCodeableConcept",
+          "path": "$.code",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "code": {
+              "coding": [
+                {
+                  "code": "zzz",
+                  "system": "http://x.example.org/c"
+                }
+              ]
+            },
+            "valueString": "?"
+          },
+          "code": "slice_unmatched",
+          "element_id": "Observation.component",
+          "expected": {
+            "slices": [
+              "sys",
+              "dia"
+            ]
+          },
+          "message": "item matches no slice of the closed slicing at Observation.component",
+          "path": "$.component[1]",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "slice_min",
+          "element_id": "Observation.component:sys",
+          "expected": {
+            "min": 1,
+            "slice": "sys"
+          },
+          "message": "slice 'sys': 0 item(s), minimum 1",
+          "path": "Observation.component",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": "preliminary",
+          "code": "fixed_mismatch",
+          "element_id": "Observation.status",
+          "expected": "final",
+          "message": "value must equal fixedCode",
+          "path": "$.status",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "choice": "valueString",
+            "type": "String"
+          },
+          "code": "choice_type_not_allowed",
+          "element_id": "Observation.value[x]",
+          "expected": {
+            "types": [
+              "Quantity"
+            ]
+          },
+          "message": "choice 'valueString' is not one of the allowed types ['Quantity']",
+          "path": "$.valueString",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "o-bad",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "7d8fceda1592829979eb5e4fa08b02cd0198d87a122eeb30e8716a5022d2273b",
+      "cut_seq": 32,
+      "findings": [],
+      "identity": {
+        "id": "o-ok",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "a34a7b4e86d1845c8e22b4b6d6e7fddee56efb20c6c31185da4afb1c191504fb",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "code": "unsupported_valueset_filter",
+          "element_id": "Observation.category",
+          "message": "ValueSet compose filters need terminology reasoning that is not available offline",
+          "path": "Observation.category",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        },
+        {
+          "actual": {
+            "expressions": [
+              "effectiveDateTime <= now()"
+            ]
+          },
+          "code": "unsupported_fhirpath_constraint",
+          "element_id": "Observation.effective[x]",
+          "message": "FHIRPath constraint(s) are not evaluated by this audit",
+          "path": "Observation.effective[x]",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        },
+        {
+          "actual": {
+            "profiles": [
+              "http://synth.example.org/StructureDefinition/synth-patient"
+            ]
+          },
+          "code": "unsupported_target_profile",
+          "element_id": "Observation.subject",
+          "message": "type profile / Reference targetProfile constraints are not evaluated by this audit",
+          "path": "Observation.subject",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0",
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "o-strict",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "unsupported",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "f0a2817fae813303481c83acc220f9401cc4c2edb200515bf3f182a2c5f71ace",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": {
+            "start": "2026-01-01"
+          },
+          "code": "slice_unmatched",
+          "element_id": "Observation.value[x]",
+          "expected": {
+            "slices": [
+              "valueQuantity",
+              "valueString"
+            ]
+          },
+          "message": "item matches no slice of the closed slicing at Observation.value[x]",
+          "path": "$.valuePeriod",
+          "profile": "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "o-typed-bad",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "fbbdc4f94267102d6d6737db75f20b9dfc4511267767187a07ba029d91038e29",
+      "cut_seq": 32,
+      "findings": [],
+      "identity": {
+        "id": "o-typed-ok",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "pass",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "2774cc766d5087017e7e883ca9a00e04f4a3fa4dc33208aea5ab8c724799cdd1",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/synth-patient",
+          "code": "profile_type_mismatch",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/synth-patient' constrains Patient, not Observation",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "o-wrongtype",
+        "resourceType": "Observation",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_type_mismatch",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "f7ded54e2dd2feb6537e9a48245a336d956c89fbc74d9d709b7fbea94221df1e",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/dup-sd",
+          "code": "profile_unknown",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/dup-sd' is not in the registered package closure",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "p-ambig",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_unknown",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "13860b60f9a115858338ef1697dd7dcfe71ad61e261ee021c89c49df7d10b25d",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": false,
+          "code": "fixed_mismatch",
+          "element_id": "Patient.active",
+          "expected": true,
+          "message": "value must equal fixedBoolean",
+          "path": "$.active",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "other",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "slice_min",
+          "element_id": "Patient.identifier:mrn",
+          "expected": {
+            "min": 1,
+            "slice": "mrn"
+          },
+          "message": "slice 'mrn': 0 item(s), minimum 1",
+          "path": "Patient.identifier",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        },
+        {
+          "actual": {
+            "count": 0
+          },
+          "code": "min_cardinality",
+          "element_id": "Patient.name",
+          "expected": {
+            "min": 1
+          },
+          "message": "Patient.name: 0 item(s) present, minimum is 1",
+          "path": "Patient.name",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-bad",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "c821376917464d776646237fb4e8e936c88ba27f29325d70f4f3b51b7dd36747",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "unknown",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-excl",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "038fbe3927ecd5a223bf68e6b9fae1ebfcf570bc3eb6c697ddbfbd5580a740ad",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": {
+            "count": 4
+          },
+          "code": "max_cardinality",
+          "element_id": "Patient.name",
+          "expected": {
+            "max": 3
+          },
+          "message": "Patient.name: 4 item(s) present, maximum is 3",
+          "path": "Patient.name",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-names",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "d77255e839d0aca84baa647dbab72d1009f978dfabfe86d911bc82c7344132a5",
+      "cut_seq": 32,
+      "findings": [],
+      "identity": {
+        "id": "p-noprof",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "no_profile",
+      "selected_profiles": [],
+      "versionId": "v1"
+    },
+    {
+      "body_digest": "e70aba20ade3b4a7c0957494ccec0d4519f0f031c9f59b6a0b547620792ebba1",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": {
+            "codings": [
+              {
+                "code": "other",
+                "system": ""
+              }
+            ]
+          },
+          "code": "code_not_in_valueset",
+          "element_id": "Patient.gender",
+          "expected": {
+            "expansion_size": 2,
+            "valueSet": "http://synth.example.org/ValueSet/gender-vs"
+          },
+          "message": "coded value is not in the required value set",
+          "path": "$.gender",
+          "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0",
+          "severity": "error"
+        }
+      ],
+      "identity": {
+        "id": "p-ok",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "fail",
+      "selected_profiles": [
+        "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      ],
+      "versionId": "v2"
+    },
+    {
+      "body_digest": "27abca8aed4280790117c92450a7d85d97f3f9f1e9c0237e5edc8e0548756c7e",
+      "cut_seq": 32,
+      "findings": [
+        {
+          "actual": "http://synth.example.org/StructureDefinition/ghost|9.9.9",
+          "code": "profile_unknown",
+          "element_id": null,
+          "message": "meta.profile entry 'http://synth.example.org/StructureDefinition/ghost|9.9.9' is not in the registered package closure",
+          "path": "$.meta.profile",
+          "profile": null,
+          "severity": "unsupported"
+        }
+      ],
+      "identity": {
+        "id": "p-unknown",
+        "resourceType": "Patient",
+        "source_server": "https://fhir.example.org/ig",
+        "tenant": "tenant-ig"
+      },
+      "result": "profile_unknown",
+      "selected_profiles": [],
+      "versionId": "v1"
+    }
+  ],
+  "status": "complete",
+  "summary": {
+    "by_finding_code": {
+      "choice_type_not_allowed": 3,
+      "code_not_in_valueset": 8,
+      "fixed_mismatch": 6,
+      "max_cardinality": 3,
+      "min_cardinality": 3,
+      "pattern_mismatch": 3,
+      "profile_type_mismatch": 3,
+      "profile_unknown": 6,
+      "slice_min": 6,
+      "slice_unmatched": 6,
+      "unsupported_fhirpath_constraint": 3,
+      "unsupported_target_profile": 3,
+      "unsupported_valueset_filter": 3
+    },
+    "by_rule": [
+      {
+        "code": "profile_type_mismatch",
+        "count": 3,
+        "element_id": null,
+        "profile": null
+      },
+      {
+        "code": "profile_unknown",
+        "count": 6,
+        "element_id": null,
+        "profile": null
+      },
+      {
+        "code": "unsupported_valueset_filter",
+        "count": 3,
+        "element_id": "Observation.category",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0"
+      },
+      {
+        "code": "unsupported_fhirpath_constraint",
+        "count": 3,
+        "element_id": "Observation.effective[x]",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0"
+      },
+      {
+        "code": "unsupported_target_profile",
+        "count": 3,
+        "element_id": "Observation.subject",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation-strict|1.0.0"
+      },
+      {
+        "code": "slice_unmatched",
+        "count": 3,
+        "element_id": "Observation.value[x]",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation-typed|1.0.0"
+      },
+      {
+        "code": "pattern_mismatch",
+        "count": 3,
+        "element_id": "Observation.code",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      },
+      {
+        "code": "slice_unmatched",
+        "count": 3,
+        "element_id": "Observation.component",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      },
+      {
+        "code": "slice_min",
+        "count": 3,
+        "element_id": "Observation.component:sys",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      },
+      {
+        "code": "fixed_mismatch",
+        "count": 3,
+        "element_id": "Observation.status",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      },
+      {
+        "code": "choice_type_not_allowed",
+        "count": 3,
+        "element_id": "Observation.value[x]",
+        "profile": "http://synth.example.org/StructureDefinition/synth-observation|1.0.0"
+      },
+      {
+        "code": "fixed_mismatch",
+        "count": 3,
+        "element_id": "Patient.active",
+        "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      },
+      {
+        "code": "code_not_in_valueset",
+        "count": 8,
+        "element_id": "Patient.gender",
+        "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      },
+      {
+        "code": "slice_min",
+        "count": 3,
+        "element_id": "Patient.identifier:mrn",
+        "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      },
+      {
+        "code": "max_cardinality",
+        "count": 3,
+        "element_id": "Patient.name",
+        "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      },
+      {
+        "code": "min_cardinality",
+        "count": 3,
+        "element_id": "Patient.name",
+        "profile": "http://synth.example.org/StructureDefinition/synth-patient|1.0.0"
+      }
+    ],
+    "cuts": {
+      "30": {
+        "deleted": 0,
+        "fail": 5,
+        "no_profile": 1,
+        "pass": 4,
+        "profile_ambiguous": 0,
+        "profile_type_mismatch": 1,
+        "profile_unknown": 2,
+        "unsupported": 1
+      },
+      "31": {
+        "deleted": 0,
+        "fail": 6,
+        "no_profile": 1,
+        "pass": 3,
+        "profile_ambiguous": 0,
+        "profile_type_mismatch": 1,
+        "profile_unknown": 2,
+        "unsupported": 1
+      },
+      "32": {
+        "deleted": 1,
+        "fail": 6,
+        "no_profile": 1,
+        "pass": 2,
+        "profile_ambiguous": 0,
+        "profile_type_mismatch": 1,
+        "profile_unknown": 2,
+        "unsupported": 1
+      }
+    },
+    "memberships": 41,
+    "total": {
+      "deleted": 1,
+      "fail": 17,
+      "no_profile": 3,
+      "pass": 9,
+      "profile_ambiguous": 0,
+      "profile_type_mismatch": 3,
+      "profile_unknown": 6,
+      "unsupported": 3
+    },
+    "unique_evaluations": 15
+  }
+}
