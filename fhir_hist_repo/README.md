@@ -17,6 +17,7 @@ fhir_hist_repo/
 ├── src/fhist/            # 正式实现（摄取、存储、解析、查询、CLI）
 │   ├── cli.py            # 命令入口：init/stage/advance/status/resource/
 │   │                     #         references/trace-path/verify/profile/audit
+│   │                     #         bedreport/bedload
 │   ├── config.py         # 规范基址与显式等价别名
 │   ├── paths.py          # 可重定位布局 + 内容寻址 blob 路径
 │   ├── db.py             # SQLite schema、WAL、写事务/快照读事务
@@ -31,7 +32,9 @@ fhir_hist_repo/
 │   ├── status.py         # 状态汇总
 │   ├── igmodel.py        # IG 模型：SD 继承合并、ValueSet 展开（纯内存）
 │   ├── profiles.py       # profile 包登记、canonical 唯一性、依赖闭包
-│   └── audit.py          # 合规审计：评估引擎、可恢复运行、确定性报告
+│   ├── audit.py          # 合规审计：评估引擎、可恢复运行、确定性报告
+│   ├── bedreport.py      # 床位日报：日历+cut → 日事实分区、更正差分、发布目录
+│   └── bedload.py        # 下游装载：发布目录 → SQLite（独立于原仓）
 ├── bin/fhist             # python -I 启动壳
 ├── tools/
 │   ├── make_fixtures.py      # 合成夹具生成（主演练 + 负例）
@@ -39,12 +42,15 @@ fhir_hist_repo/
 │   ├── make_conflict_case.py # conflict 解析状态可见性夹具
 │   ├── large_history.py      # 大历史流式生成器（单资源可大、整包不常驻）
 │   ├── make_ig_fixtures.py   # profile 包 + 审计历史夹具（运行时生成）
+│   ├── make_bed_fixtures.py  # 床位日报夹具 + 大历史/大日历生成器
 │   ├── check.py              # 独立核对器（不 import 正式解析器）
 │   ├── check_audit.py        # 审计独立核对器（手工预期 finding 表）
+│   ├── check_bedreport.py    # 床位日报独立核对器（手工数字表 + 自实现口径）
 │   └── rebuild.py            # 从归档包全量重建并逐 cut 比对
 └── docs/
     ├── ARCHITECTURE.md
     ├── PROFILE_AUDIT.md      # 约束子集、选择优先级、审计边界、恢复语义
+    ├── BED_REPORT.md         # 床位日报：发布/核账/装载命令与文件合同
     └── DRILL_REPORT.md
 ```
 
@@ -100,12 +106,28 @@ bin/fhist --repo ./handoff audit report   --audit-id <id> --out report.json
 退出码：0 = 成功（含审计完成但存在 fail finding）；2 = 操作/用法错误；
 3 = 审计中断、可重跑恢复。
 
-## 4. 一键演练
+## 4. 床位日报发布与装载
+
+对已发布 cut 与一份开床日历（CSV）生成「本地日期 × 病区」日事实分
+区，产出可整体移动、带机器可验证清单的发布目录；更正版只交付精确行
+级差分；下游用独立于原仓的 `bedload` 命令把分区原子装入 SQLite（详
+见 [docs/BED_REPORT.md](docs/BED_REPORT.md)）：
+
+```bash
+bin/fhist --repo ./handoff bedreport publish --source-server S --tenant T \
+  --cut 11 --timezone UTC --from-date 2026-03-10 --to-date 2026-03-11 \
+  --calendar beds.csv [--base-release REL_DIR]
+bin/fhist bedreport evidence --release REL_DIR --section slices --ward W1
+bin/fhist bedload --db warehouse.sqlite3 --release REL_DIR
+```
+
+## 5. 一键演练
 
 ```bash
 python3 -I tools/make_fixtures.py build/fixtures
 python3 -I tools/check.py build
 python3 -I tools/check_audit.py build   # profile 审计演练（夹具运行时生成）
+python3 -I tools/check_bedreport.py build  # 床位日报演练（夹具运行时生成）
 ```
 
 核对器**不导入** `fhist` 解析代码：它仅通过 CLI 驱动正式库，自己用标准库
