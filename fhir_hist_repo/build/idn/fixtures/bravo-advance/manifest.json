@@ -1,0 +1,38 @@
+{
+  "format_version": 1,
+  "source_server": "https://fhir.example.org/bravo",
+  "tenant": "tenant-care",
+  "aliases": [],
+  "baseline": {
+    "seq": 20,
+    "path": "baseline/baseline.ndjson",
+    "sha256": "31dd9b74f47a13b72b1c94cd14a29a21f8c20340c20a9f7aa6b9aaf5d1cfcc8f",
+    "resource_count": 2
+  },
+  "transactions": [
+    {
+      "seq": 21,
+      "operation_count": 1,
+      "shards": [
+        {
+          "ordinal": 0,
+          "path": "shards/seq-21.ndjson",
+          "sha256": "0580e32955b1ba8d24503051384384370fffd3b8da1d8da5b98d67453f892f74",
+          "operation_count": 1
+        }
+      ]
+    },
+    {
+      "seq": 22,
+      "operation_count": 1,
+      "shards": [
+        {
+          "ordinal": 0,
+          "path": "shards/seq-22.ndjson",
+          "sha256": "1fd1960490425043650125ba02a650aef6645a8d26101100d77f6926287788f4",
+          "operation_count": 1
+        }
+      ]
+    }
+  ]
+}

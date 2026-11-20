@@ -1,0 +1,272 @@
+  PASS stage alpha
+  PASS advance alpha to baseline 10
+  PASS stage bravo
+  PASS advance bravo to baseline 20
+  PASS stage charlie
+  PASS advance charlie to baseline 30
+  PASS stage delta
+  PASS advance delta to baseline 40
+
+== headline walkthrough ==
+  PASS release 1 published
+  PASS release 1 parent null
+  PASS release 1 cut vector
+  PASS assign alpha|a1 @ 2026-01-09 status
+  PASS assign alpha|a1 @ 2026-01-09 unified
+  PASS assign bravo|b1 @ 2026-01-09 status
+  PASS assign bravo|b1 @ 2026-01-09 unified
+  PASS assign charlie|c1 @ 2026-01-09 status
+  PASS assign charlie|c1 @ 2026-01-09 unified
+  PASS assign alpha|a1 @ 2026-01-10 status
+  PASS assign alpha|a1 @ 2026-01-10 unified
+  PASS assign bravo|b1 @ 2026-01-10 status
+  PASS assign bravo|b1 @ 2026-01-10 unified
+  PASS assign charlie|c1 @ 2026-01-10 status
+  PASS assign charlie|c1 @ 2026-01-10 unified
+  PASS assign alpha|a1 @ 2026-01-14 status
+  PASS assign alpha|a1 @ 2026-01-14 unified
+  PASS assign bravo|b1 @ 2026-01-14 status
+  PASS assign bravo|b1 @ 2026-01-14 unified
+  PASS assign charlie|c1 @ 2026-01-14 status
+  PASS assign charlie|c1 @ 2026-01-14 unified
+  PASS assign alpha|a1 @ 2026-01-15 status
+  PASS assign alpha|a1 @ 2026-01-15 unified
+  PASS assign alpha|a1 @ 2026-01-15 is conflict
+  PASS assign bravo|b1 @ 2026-01-15 status
+  PASS assign bravo|b1 @ 2026-01-15 unified
+  PASS assign bravo|b1 @ 2026-01-15 is conflict
+  PASS assign charlie|c1 @ 2026-01-15 status
+  PASS assign charlie|c1 @ 2026-01-15 unified
+  PASS assign charlie|c1 @ 2026-01-15 is conflict
+  PASS assign alpha|a1 @ 2026-01-16 status
+  PASS assign alpha|a1 @ 2026-01-16 unified
+  PASS assign alpha|a1 @ 2026-01-16 is conflict
+  PASS assign bravo|b1 @ 2026-01-16 status
+  PASS assign bravo|b1 @ 2026-01-16 unified
+  PASS assign bravo|b1 @ 2026-01-16 is conflict
+  PASS assign charlie|c1 @ 2026-01-16 status
+  PASS assign charlie|c1 @ 2026-01-16 unified
+  PASS assign charlie|c1 @ 2026-01-16 is conflict
+  PASS assign alpha|a1 @ 2026-01-17 status
+  PASS assign alpha|a1 @ 2026-01-17 unified
+  PASS assign alpha|a1 @ 2026-01-17 is conflict
+  PASS assign bravo|b1 @ 2026-01-17 status
+  PASS assign bravo|b1 @ 2026-01-17 unified
+  PASS assign bravo|b1 @ 2026-01-17 is conflict
+  PASS assign charlie|c1 @ 2026-01-17 status
+  PASS assign charlie|c1 @ 2026-01-17 unified
+  PASS assign charlie|c1 @ 2026-01-17 is conflict
+  PASS assign alpha|a1 @ 2026-01-18 status
+  PASS assign alpha|a1 @ 2026-01-18 unified
+  PASS assign bravo|b1 @ 2026-01-18 status
+  PASS assign bravo|b1 @ 2026-01-18 unified
+  PASS assign charlie|c1 @ 2026-01-18 status
+  PASS assign charlie|c1 @ 2026-01-18 unified
+  PASS assign alpha|a1 @ 2026-01-19 status
+  PASS assign alpha|a1 @ 2026-01-19 unified
+  PASS assign bravo|b1 @ 2026-01-19 status
+  PASS assign bravo|b1 @ 2026-01-19 unified
+  PASS assign charlie|c1 @ 2026-01-19 status
+  PASS assign charlie|c1 @ 2026-01-19 unified
+  PASS assign alpha|a1 @ 2026-01-20 status
+  PASS assign alpha|a1 @ 2026-01-20 unified
+  PASS assign bravo|b1 @ 2026-01-20 status
+  PASS assign bravo|b1 @ 2026-01-20 unified
+  PASS assign charlie|c1 @ 2026-01-20 status
+  PASS assign charlie|c1 @ 2026-01-20 unified
+  PASS assign alpha|a1 @ 2026-01-31 status
+  PASS assign alpha|a1 @ 2026-01-31 unified
+  PASS assign bravo|b1 @ 2026-01-31 status
+  PASS assign bravo|b1 @ 2026-01-31 unified
+  PASS assign charlie|c1 @ 2026-01-31 status
+  PASS assign charlie|c1 @ 2026-01-31 unified
+  PASS day 19 charlie alone
+  PASS day 20 charlie key moves to its own key
+  PASS members 14th status
+  PASS members 14th complete
+  PASS conflict group is reported as conflict, not enumerable
+  PASS conflict group has no unified membership
+  PASS 20th charlie group enumerated
+  PASS verify same on 14th
+  PASS verify path uses two decisions
+  PASS verify path decision ids
+  PASS verify path endpoints carry versions
+  PASS verify path carries seq coordinates
+  PASS verify conflict on 16th
+  PASS conflict evidence decision is the different edge
+  PASS conflict evidence revision
+  PASS conflict evidence paths through b
+  PASS conflict evidence both endpoints present
+  PASS never-seen key is absent
+  PASS date outside range rejected
+  PASS unknown release rejected
+
+== status range runs (merged adjacent results) ==
+  PASS status range rc
+  PASS status runs merged by result
+  PASS run boundaries are consecutive half-open intervals
+  PASS single-day window still gives a run
+
+== release 2: replace one same() and keep release 1 frozen ==
+  PASS release 2 published
+  PASS release 2 parent
+  PASS r2 alpha|a1 @ 2026-01-10
+  PASS r2 bravo|b1 @ 2026-01-10
+  PASS r2 charlie|c1 @ 2026-01-10
+  PASS r2 alpha|a1 @ 2026-01-11
+  PASS r2 bravo|b1 @ 2026-01-11
+  PASS r2 charlie|c1 @ 2026-01-11
+  PASS r2 alpha|a1 @ 2026-01-12
+  PASS r2 bravo|b1 @ 2026-01-12
+  PASS r2 charlie|c1 @ 2026-01-12
+  PASS r2 alpha|a1 @ 2026-01-15
+  PASS r2 bravo|b1 @ 2026-01-15
+  PASS r2 charlie|c1 @ 2026-01-15
+  PASS r2 alpha|a1 @ 2026-01-16
+  PASS r2 bravo|b1 @ 2026-01-16
+  PASS r2 charlie|c1 @ 2026-01-16
+  PASS r2 alpha|a1 @ 2026-01-19
+  PASS r2 bravo|b1 @ 2026-01-19
+  PASS r2 charlie|c1 @ 2026-01-19
+  PASS d-bc revision reported
+  PASS d-bc active on 15th
+  PASS d-bc interval updated
+  PASS d-bc inactive after its new end
+  PASS r1 frozen conflict alpha@16
+  PASS r1 frozen conflict bravo@16
+  PASS r1 frozen conflict charlie@16
+  PASS r1 still same on the 19th
+  PASS old unified key resolves to release 2's members
+  PASS r2 old unified key on 16th is a different patient
+  PASS non-participating source key refused
+
+== release 3: retract the different() and re-check ==
+  PASS release 3 published
+  PASS retracted decision is not effective
+  PASS 16th no longer conflicts in release 3
+  PASS 16th in release 2 is a-b only, no conflict
+  PASS 16th in release 2 keeps c separate
+
+== same-name keys, equal paths, parallel edges ==
+  PASS independent release 4 published
+  PASS release 4 has no parent
+  PASS alpha|a1 never merges with delta|a1
+  PASS delta|a1 own group
+  PASS equal-length path is same
+  PASS equal-length tie goes to first decision id
+  PASS release 5 published
+  PASS parallel edges: shortest chosen
+  PASS parallel edges tie-break on decision id
+  PASS release 4 unaffected by later parallel edge
+
+== cut advance to a tombstone, pending decisions, then restore ==
+  PASS bravo advances to tombstone seq21
+  PASS release 6 published over tombstone
+  PASS d-ab pending at tombstone cut
+  PASS d-ab endpoint availability reports tombstone
+  PASS d-ab not participating
+  PASS d-bc pending too
+  PASS different between two separate groups
+  PASS both separate groups keep their own keys
+  PASS a1 independent while b1 tombstoned
+  PASS c1 independent while b1 tombstoned
+  PASS tombstoned key is deleted, not missing
+  PASS never-seen key distinct from tombstone
+  PASS a1/c1 unrelated without the a-b bridge
+  PASS verify reports pending when an endpoint is a tombstone
+  PASS pending carries per-endpoint availability
+  PASS bravo advances to seq23 (restore)
+  PASS release 7 published after restore
+  PASS d-ab active again after restore
+  PASS d-ab participates after restore
+  PASS group re-forms after restore (a1)
+  PASS group re-forms after restore (c1 joined by same)
+  PASS conflict returns on the 15th
+  PASS the 16th is a-b only again
+  PASS d-bc revision still 2 (not recopied)
+  PASS restored different keeps revision 3
+
+== refresh counts: small change never triggers a full rewrite ==
+  PASS stats expose seen versions per source
+  PASS stats expose recomputed and reused keys
+  PASS some keys reused from parent
+  PASS no full rewrite: reused + recomputed covers all member keys
+  PASS release 8 published
+  PASS release 8 recomputed only the touched group
+  PASS release 8 reused the untouched groups
+  PASS m/n/o/p still connected after retracting one edge
+
+== atomic rejection: every bad publication is refused whole ==
+  PASS reject reused release number
+  PASS reject stale parent
+  PASS reject old revision
+  PASS reject duplicate decision id
+  PASS reject empty interval
+  PASS reject out-of-range interval
+  PASS reject unknown source in decision
+  PASS reject unpublished cut
+  PASS reject retract absent decision
+  PASS reject first release with parent
+  PASS no rejected release became visible
+  PASS rejected release 60 absent
+  PASS rejected release 61 absent
+  PASS rejected release 62 absent
+  PASS rejected release 63 absent
+  PASS rejected release 64 absent
+  PASS rejected release 65 absent
+  PASS rejected release 66 absent
+  PASS rejected release 67 absent
+  PASS rejected release 68 absent
+
+== idempotent retry, interrupted publish, parent race ==
+  PASS identical retry folds
+  PASS fold returns original id
+  PASS fold returns original stats
+  PASS release 9 published
+  PASS retry of 8 still folds after head moved
+  PASS release 9 shows conflict from the different edge
+  PASS first child of parent 9 wins
+  PASS second child of same parent refused
+  PASS no-change release reuses all member keys
+  PASS interrupted publish exits abnormally
+  PASS interrupted release is not visible
+  PASS retry after interruption succeeds
+  PASS retried release 12 visible
+  PASS retry applied the decision that was interrupted
+  PASS publish on unpublished cut rejected
+  PASS rejected number is still free
+
+== query snapshot while a source cut advances ==
+  NOTE sync point: identity reader open on release 7, writer publishing 13
+  PASS writer publishes release 13 concurrently
+  PASS in-flight identity query stayed on release 7
+  PASS b2 is available in release 7 but not yet bridged
+  PASS release 13 sees b2 available
+  PASS release 13 joins a1 and b2
+  PASS frozen release 7 keeps its own attribution for b1
+
+== independent reference engine vs CLI, day by day ==
+  PASS reference engine agrees for release 1 (31 days x 6 keys)
+  PASS reference engine agrees for release 2 (31 days x 6 keys)
+  PASS reference engine agrees for release 3 (31 days x 6 keys)
+
+== scale: one small group change on a 200-patient source ==
+  PASS scale source advances to 200 patients
+  PASS scale release 1 published
+  PASS first release recomputes every member
+  PASS first release reuses nothing
+  PASS 200 echo keys form 40 groups of 5
+  PASS scale release 2 published
+  PASS only the touched group is recomputed
+  PASS the other 197 keys are reused
+  PASS touched group split into 2 + 3
+  PASS scale release 2 saw no new versions (cut unchanged)
+  PASS release 7 saw bravo's two new versions when the cut advanced
+  PASS unrelated group untouched by the split
+  PASS alpha key reused from parent
+  PASS no-op release reuses every key
+  PASS no-op release changes no day
+  PASS per-day stats persisted for every business day
+
+== summary ==
+ALL CHECKS PASSED

@@ -1,0 +1,93 @@
+
+== headline: fixed numbers, evidence, correction chain ==
+  PASS R1 published
+  PASS R1 facts match hand table
+  PASS R1 manifest verifies independently
+  PASS one conflict slice
+  PASS conflict slice is 03:00-04:00 UTC
+  PASS conflict parties recoverable from evidence
+  PASS conflict party versions
+  PASS conflict slice cites calendar line
+  PASS bed-2 empty all day, calendar line cited
+  PASS E6 per-item exceptions
+  PASS cut10 unassigned is E6 on bed-del
+  PASS R2 published
+  PASS R2 facts match hand table
+  PASS R2 delivers exactly the changed W1 row
+  PASS R2 retracts nothing (W2 unchanged row not delivered)
+  PASS R2 manifest verifies independently
+  PASS cut11 bed-del tombstone becomes an exception
+  PASS R3 facts match hand table
+  PASS R3 writes the same measures under the new ward key
+  PASS R3 retracts the old ward key (not a zero row)
+  PASS R3 manifest verifies independently
+  PASS identical re-run folds
+  PASS folded release keeps identity
+  PASS no extra release dir created by the fold
+  PASS load R1
+  PASS db after R1
+  PASS replay R1 is a no-op
+  PASS db unchanged by replay
+  PASS skipped batch rejected
+  PASS db unchanged by skipped batch
+  PASS load R2
+  PASS db after R2
+  PASS tampered local pre-state rejected
+  PASS tampered row not silently repaired or half-updated
+  PASS load R3 after repair
+  PASS db after full chain
+  PASS replay R3 is a no-op
+  PASS fresh full publish is initial
+  PASS chained corrections equal full publish at target cut+calendar
+  PASS full publish facts identity equals R3 target
+  PASS corrupt delivery rejected
+  PASS missing delivery file rejected
+  PASS tampered series manifest rejected
+  PASS moved release verifies
+  PASS moved release loads
+  PASS moved-load final facts
+  PASS verify flags corrupted release
+  PASS verify reports the damaged file
+  PASS semantically invalid row rejected mid-load
+  PASS failed load left the partition untouched
+  PASS correct retry after failed load succeeds
+  PASS retry reached the target facts
+  PASS post-load target identity enforced
+  PASS target-mismatch load rolled back
+  PASS recompute after interruption folds
+  PASS stale temp dir cleaned
+  PASS old base batches not rewritten
+
+== extended: mid-day ward change, open gaps, active open end ==
+  PASS extended facts match hand table
+  PASS out-of-calendar tail kept as diagnostic with evidence
+  PASS extended manifest verifies independently
+
+== New York DST: 23h and 25h local days, local day boundary ==
+  PASS spring-forward facts match hand table
+  PASS fall-back facts match hand table
+
+== same-named bed outside this source ==
+  PASS source B facts match hand table (no leak from source A)
+
+== calendar rejections ==
+  PASS cross-ward overlap rejects the whole calendar
+  PASS calendar bed missing at cut rejects the publish
+  PASS no release dir left behind by rejected publishes
+
+== large history + large calendar: independent cross-check ==
+  PASS large R1 facts equal independent engine
+  PASS large R1 facts identity equal independent digest
+  PASS large R1 unassigned count equals independent engine
+  PASS large R1 manifest verifies independently
+  PASS large R2 facts equal independent engine
+  PASS large correction upsert keys equal independent diff
+  PASS large correction retract keys equal independent diff
+  PASS large upsert rows carry the new measures
+  PASS large R1 loads
+  PASS large R2 loads
+  PASS large chained db equals independent target facts
+  PASS large fresh full publish equals chained corrections
+
+== summary ==
+ALL CHECKS PASSED

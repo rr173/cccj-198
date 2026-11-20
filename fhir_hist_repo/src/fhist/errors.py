@@ -159,3 +159,39 @@ class PartitionNotEmpty(FHError):
     """An initial (full) release was offered to a non-empty partition."""
 
     status = "partition_not_empty"
+
+
+# ---------------------------------------------------------------------------
+# Cross-source patient identity dimension (see docs/IDENTITY_DIMENSION.md)
+# ---------------------------------------------------------------------------
+
+class UnknownIdentityRelease(FHError):
+    """The requested identity-dimension release number does not exist."""
+
+    status = "unknown_release"
+
+
+class UnknownDecision(FHError):
+    """A decision id/revision is not the effective revision in the base."""
+
+    status = "unknown_decision"
+
+
+class IdentityReleaseRejected(FHError):
+    """A release request is invalid; nothing of it becomes visible."""
+
+    status = "release_rejected"
+
+
+class IdentityDateOutOfRange(FHError):
+    """A queried business date lies outside the release's fixed range."""
+
+    status = "date_out_of_range"
+
+
+class KeyNotParticipating(FHError):
+    """The source key's source does not take part in this release."""
+
+    status = "key_not_participating"
+
+

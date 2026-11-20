@@ -1,0 +1,28 @@
+{
+  "format_version": 1,
+  "source_server": "https://fhir.example.org/a",
+  "tenant": "tenant-main",
+  "aliases": [
+    "https://fhir-alias.example.net/a"
+  ],
+  "baseline": {
+    "seq": 10,
+    "path": "baseline/baseline.ndjson",
+    "sha256": "6a073c159a09c6d760ee0861f6ef93386a483d822b5de782226f0d9768f67c2f",
+    "resource_count": 7
+  },
+  "transactions": [
+    {
+      "seq": 13,
+      "operation_count": 1,
+      "shards": [
+        {
+          "ordinal": 0,
+          "path": "shards/seq-13-part-0.ndjson",
+          "sha256": "40b0afc45fc8943ab3ceb6548b373d6c6eebb20a8912fed0e3fb5cf0b154373f",
+          "operation_count": 1
+        }
+      ]
+    }
+  ]
+}

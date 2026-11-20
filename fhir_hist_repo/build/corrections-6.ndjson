@@ -1,0 +1,1 @@
+{"decision_id": "d-ac", "interval": {"end": "2026-01-18", "start": "2026-01-15"}, "kind": "different", "left": {"id": "a1", "source_server": "https://fhir.example.org/alpha", "tenant": "tenant-care"}, "op": "set", "revision": 3, "right": {"id": "c1", "source_server": "https://fhir.example.org/charlie", "tenant": "tenant-care"}}

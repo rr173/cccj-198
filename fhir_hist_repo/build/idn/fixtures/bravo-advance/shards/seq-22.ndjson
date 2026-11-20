@@ -1,0 +1,1 @@
+{"id": "b2", "method": "PUT", "ordinal": 0, "resource": {"active": true, "id": "b2", "meta": {"lastUpdated": "2026-01-05T00:00:00Z", "versionId": "v1"}, "name": [{"family": "SYNTH-b2", "given": ["Synthetic"], "use": "official"}], "resourceType": "Patient"}, "resourceType": "Patient", "seq": 22, "versionId": "v1"}

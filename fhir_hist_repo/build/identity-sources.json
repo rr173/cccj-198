@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "source_server": "https://fhir.example.org/alpha",
+      "aliases": []
+    },
+    {
+      "source_server": "https://fhir.example.org/bravo",
+      "aliases": []
+    },
+    {
+      "source_server": "https://fhir.example.org/charlie",
+      "aliases": []
+    },
+    {
+      "source_server": "https://fhir.example.org/delta",
+      "aliases": []
+    }
+  ]
+}

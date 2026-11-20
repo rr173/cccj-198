@@ -1,0 +1,1 @@
+{"decision_id": "p0", "interval": {"end": "2026-04-01", "start": "2026-03-01"}, "kind": "same", "left": {"id": "n", "source_server": "https://fhir.example.org/delta", "tenant": "tenant-care"}, "op": "set", "revision": 1, "right": {"id": "p", "source_server": "https://fhir.example.org/delta", "tenant": "tenant-care"}}

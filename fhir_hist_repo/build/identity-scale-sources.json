@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "source_server": "https://fhir.example.org/alpha",
+      "aliases": []
+    },
+    {
+      "source_server": "https://fhir.example.org/echo",
+      "aliases": []
+    }
+  ]
+}

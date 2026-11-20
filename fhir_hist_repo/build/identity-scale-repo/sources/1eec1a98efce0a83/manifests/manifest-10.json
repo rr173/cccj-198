@@ -1,0 +1,13 @@
+{
+  "format_version": 1,
+  "source_server": "https://fhir.example.org/alpha",
+  "tenant": "tenant-care",
+  "aliases": [],
+  "baseline": {
+    "seq": 10,
+    "path": "baseline/baseline.ndjson",
+    "sha256": "cac4a2e4fe4417f32bfa56160cbd838e1d3f6071b9e18cf784d717cb8b3d010e",
+    "resource_count": 2
+  },
+  "transactions": []
+}
