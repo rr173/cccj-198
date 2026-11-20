@@ -1,1 +1,0 @@
-{"active":true,"id":"other","link":[{"reference":"Patient/p"},{"reference":"https://fhir.example.org/a/Patient/p"}],"meta":{"lastUpdated":"2026-01-01T00:00:00Z","versionId":"vO"},"name":[{"family":"SYNTHETIC-other","given":["Test"],"use":"official"}],"resourceType":"Patient"}
