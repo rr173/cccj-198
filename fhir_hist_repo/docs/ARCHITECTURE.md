@@ -20,6 +20,7 @@
 | `profile_packages` / `profile_package_files` / `profile_canonicals` | 已登记 IG 包身份、文件摘要与 canonical 注册表 | 只插入；冲突即拒绝 |
 | `audit_runs` / `audit_members` / `audit_deleted` / `audit_cut_progress` | 审计运行状态与逐 cut 成员 | 运行单调推进，完成后不再变 |
 | `eval_cache` | 按 `(包digest, 根profile, 资源版本, body digest)` 键控的评估发现 | 只插入 |
+| `identity_release` / `idr_*` | 跨来源身份维表的发布、来源 cut、患者快照、裁定、逐日组与成员、统计 | 只插入；一次发布一个写事务 |
 
 关键约束：
 
@@ -128,6 +129,16 @@ sourceA 基址的引用即 external）。
 
 每条结果都回带原始来源位置：`loc`（资源内 JSON 路径）、`container`
 （拥有者或 `<owner>#<containedId>`）、`edge_id` 与原始 `ref_text`。
+
+## 3.6 跨来源患者身份维表
+
+事实身份仍是来源本地的四元组，`references` 的解析规则完全不变。跨院区
+“同一人”只来自人工裁定，落在一张**附加**维表（`src/fhist/identity.py`，
+见 [IDENTITY_DIMENSION.md](IDENTITY_DIMENSION.md)）：每版固定参与来源集合
+与业务日期范围，钉一个完整 cut 向量；某日按活动 `same` 裁定做无向连通分组，
+`different` 落在组内则整组冲突并禁止统一键，无冲突组取最小来源键的三元
+JSON 编码；每版只重算被变动触及的组，其余整组复制父版，并记录
+`recomputed_keys`/`reused_keys`。该维表不读改任何事实行，也不参与引用解析。
 
 ## 4. 并发与快照
 

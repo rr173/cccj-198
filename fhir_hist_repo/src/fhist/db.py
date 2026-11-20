@@ -243,6 +243,126 @@ CREATE TABLE IF NOT EXISTS audit_cut_progress (
 );
 """
 
+# Cross-source patient identity dimension. Additive and independent of the
+# ingest fact tables; old repositories gain it lazily via
+# :func:`ensure_identity_schema`. Every published release is immutable.
+IDENTITY_SCHEMA = """
+CREATE TABLE IF NOT EXISTS identity_release (
+    release_no       INTEGER PRIMARY KEY,
+    release_id       TEXT NOT NULL UNIQUE,
+    parent_no        INTEGER REFERENCES identity_release(release_no),
+    parent_id        TEXT,
+    cuts_json        TEXT NOT NULL,
+    date_start       TEXT NOT NULL,
+    date_end         TEXT NOT NULL,
+    correction_json  TEXT NOT NULL DEFAULT '[]',
+    request_digest   TEXT NOT NULL,
+    stats_json       TEXT NOT NULL DEFAULT '{}',
+    created_at       TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS idr_source (
+    release_no       INTEGER NOT NULL REFERENCES identity_release(release_no),
+    source_id        INTEGER NOT NULL REFERENCES sources(source_id),
+    cut_seq          INTEGER NOT NULL,
+    PRIMARY KEY (release_no, source_id)
+);
+CREATE INDEX IF NOT EXISTS idx_idr_source_cut ON idr_source(cut_seq);
+
+CREATE TABLE IF NOT EXISTS idr_patient (
+    release_no       INTEGER NOT NULL,
+    source_id        INTEGER NOT NULL,
+    logical_id       TEXT NOT NULL,
+    method           TEXT CHECK (method IN ('PUT','DELETE')),
+    version_id       TEXT,
+    seq              INTEGER,
+    tx_ordinal       INTEGER,
+    availability     TEXT NOT NULL
+        CHECK (availability IN ('available','deleted','absent')),
+    present_from     TEXT,
+    PRIMARY KEY (release_no, source_id, logical_id)
+);
+CREATE INDEX IF NOT EXISTS idx_idr_patient_key
+    ON idr_patient(release_no, source_id, logical_id);
+
+CREATE TABLE IF NOT EXISTS idr_decision (
+    release_no       INTEGER NOT NULL REFERENCES identity_release(release_no),
+    decision_id      TEXT NOT NULL,
+    revision         INTEGER NOT NULL,
+    op               TEXT NOT NULL CHECK (op IN ('set','retract')),
+    kind             TEXT,
+    left_source      INTEGER,
+    left_patient     TEXT,
+    right_source     INTEGER,
+    right_patient    TEXT,
+    date_start       TEXT,
+    date_end         TEXT,
+    PRIMARY KEY (release_no, decision_id)
+);
+CREATE INDEX IF NOT EXISTS idx_idr_decision_left
+    ON idr_decision(release_no, left_source, left_patient);
+CREATE INDEX IF NOT EXISTS idx_idr_decision_right
+    ON idr_decision(release_no, right_source, right_patient);
+
+CREATE TABLE IF NOT EXISTS idr_decision_change (
+    release_no       INTEGER NOT NULL REFERENCES identity_release(release_no),
+    decision_id      TEXT NOT NULL,
+    revision         INTEGER NOT NULL,   -- 0 means the id was retracted
+    PRIMARY KEY (release_no, decision_id)
+);
+
+CREATE TABLE IF NOT EXISTS idr_group (
+    release_no       INTEGER NOT NULL REFERENCES identity_release(release_no),
+    date_key         TEXT NOT NULL,
+    group_key        TEXT NOT NULL,
+    unified_key      TEXT,
+    conflict         INTEGER NOT NULL CHECK (conflict IN (0,1)),
+    PRIMARY KEY (release_no, date_key, group_key)
+);
+CREATE INDEX IF NOT EXISTS idx_idr_group_unified
+    ON idr_group(release_no, date_key, unified_key);
+
+CREATE TABLE IF NOT EXISTS idr_member (
+    release_no       INTEGER NOT NULL,
+    date_key         TEXT NOT NULL,
+    source_id        INTEGER NOT NULL,
+    logical_id       TEXT NOT NULL,
+    group_key        TEXT NOT NULL,
+    unified_key      TEXT,
+    parent_group_key TEXT,
+    parent_unified_key TEXT,
+    recomputed       INTEGER NOT NULL CHECK (recomputed IN (0,1)),
+    PRIMARY KEY (release_no, date_key, source_id, logical_id)
+);
+CREATE INDEX IF NOT EXISTS idx_idr_member_group
+    ON idr_member(release_no, date_key, group_key);
+CREATE INDEX IF NOT EXISTS idx_idr_member_unified
+    ON idr_member(release_no, date_key, unified_key);
+
+CREATE TABLE IF NOT EXISTS idr_day (
+    release_no       INTEGER NOT NULL REFERENCES identity_release(release_no),
+    date_key         TEXT NOT NULL,
+    changed          INTEGER NOT NULL,
+    group_count      INTEGER NOT NULL,
+    member_count     INTEGER NOT NULL,
+    conflict_count   INTEGER NOT NULL,
+    seen_versions    INTEGER NOT NULL,
+    recomputed_keys  INTEGER NOT NULL,
+    reused_keys      INTEGER NOT NULL,
+    PRIMARY KEY (release_no, date_key)
+);
+
+CREATE TABLE IF NOT EXISTS idr_worklog (
+    release_no       INTEGER NOT NULL REFERENCES identity_release(release_no),
+    source_id        INTEGER NOT NULL,
+    cut_seq          INTEGER NOT NULL,
+    seen_versions    INTEGER NOT NULL,
+    active_versions  INTEGER NOT NULL,
+    changed          INTEGER NOT NULL,
+    PRIMARY KEY (release_no, source_id)
+);
+"""
+
 
 def connect(db_path: str | Path) -> sqlite3.Connection:
     conn = sqlite3.connect(
@@ -264,6 +384,18 @@ def initialise(conn: sqlite3.Connection) -> None:
     try:
         conn.executescript(SCHEMA)
         conn.executescript(AUDIT_SCHEMA)
+        conn.executescript(IDENTITY_SCHEMA)
+    except sqlite3.OperationalError as exc:
+        if "locked" in str(exc).lower():
+            raise RepoLocked(str(exc)) from exc
+        raise
+
+
+def ensure_identity_schema(conn: sqlite3.Connection) -> None:
+    """Lazily add identity-dimension tables to older repositories."""
+
+    try:
+        conn.executescript(IDENTITY_SCHEMA)
     except sqlite3.OperationalError as exc:
         if "locked" in str(exc).lower():
             raise RepoLocked(str(exc)) from exc

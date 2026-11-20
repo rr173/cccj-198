@@ -30,9 +30,10 @@ if str(_SRC) not in sys.path:
 from fhist import audit as audit_mod  # noqa: E402
 from fhist import bedload as bedload_mod  # noqa: E402
 from fhist import bedreport as bedreport_mod  # noqa: E402
+from fhist import identity as identity_mod  # noqa: E402
 from fhist import ingest, profiles, query, status as status_mod  # noqa: E402
 from fhist.config import RepoConfig  # noqa: E402
-from fhist.db import connect, initialise  # noqa: E402
+from fhist.db import connect, ensure_identity_schema, initialise  # noqa: E402
 from fhist.errors import FHError, UsageError  # noqa: E402
 from fhist.intake import intake_package  # noqa: E402
 from fhist.paths import RepoPaths  # noqa: E402
@@ -346,6 +347,173 @@ def cmd_bedload(args: argparse.Namespace) -> None:
     _emit(bedload_mod.load_release(args.db, args.release))
 
 
+# ---------------------------------------------------------------------------
+# Cross-source patient identity dimension
+# ---------------------------------------------------------------------------
+
+def _parse_source_key(text: str, flag: str) -> tuple[str, str, str]:
+    """Parse ``source_server|tenant|id`` into a complete source key."""
+
+    parts = text.split("|")
+    if len(parts) != 3 or not all(parts):
+        raise UsageError(
+            f"{flag} must be 'source_server|tenant|id', got {text!r}")
+    return (parts[0], parts[1], parts[2])
+
+
+def _parse_cut_vector(texts: list[str]) -> list[dict[str, object]]:
+    out: list[dict[str, object]] = []
+    for text in texts:
+        parts = text.split("|")
+        if len(parts) != 3 or not all(parts):
+            raise UsageError(
+                f"--cut must be 'source_server|tenant|cut', got {text!r}")
+        try:
+            cut = int(parts[2])
+        except ValueError as exc:
+            raise UsageError(f"--cut needs an integer cut: {text!r}") from exc
+        out.append({"source_server": parts[0], "tenant": parts[1], "cut": cut})
+    return out
+
+
+def _read_ndjson_rows(path: str | None) -> list[dict]:
+    if not path:
+        return []
+    from fhist.jsonl import iter_jsonl
+
+    rows: list[dict] = []
+    for row in iter_jsonl(path):
+        rows.append(row)
+    return rows
+
+
+def cmd_identity_publish(args: argparse.Namespace) -> None:
+    paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        sources = _parse_cut_vector(args.cut_vector or [])
+        corrections = _read_ndjson_rows(args.corrections)
+        out = identity_mod.publish(
+            conn, release_no=args.release, parent=args.parent,
+            sources=sources, date_start=args.from_date, date_end=args.to_date,
+            corrections=corrections, interrupt=args.interrupt)
+        _emit(out)
+    finally:
+        conn.close()
+
+
+def _read_snapshot(conn, produce, hold_open: float = 0):
+    """Run one read against a single pinned SQLite snapshot."""
+
+    from fhist.db import snapshot_tx
+    with snapshot_tx(conn):
+        out = produce(conn)
+        if hold_open:
+            _hold(hold_open)
+    return out
+
+
+def cmd_identity_list(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        _emit(_read_snapshot(conn, identity_mod.list_releases))
+    finally:
+        conn.close()
+
+
+def cmd_identity_show(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+
+        def produce(ro):
+            out = identity_mod.release_info(ro, args.release)
+            out["status"] = "ok"
+            return out
+
+        _emit(_read_snapshot(conn, produce))
+    finally:
+        conn.close()
+
+
+def cmd_identity_assign(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        server, tenant, pid = _parse_source_key(args.key, "--key")
+        _emit(_read_snapshot(
+            conn,
+            lambda ro: identity_mod.assign(ro, args.release, server, tenant,
+                                           pid, args.date),
+            args.hold_open))
+    finally:
+        conn.close()
+
+
+def cmd_identity_members(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        _emit(_read_snapshot(
+            conn,
+            lambda ro: identity_mod.members_by_unified(
+                ro, args.release, args.unified_key, args.date)))
+    finally:
+        conn.close()
+
+
+def cmd_identity_status(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        server, tenant, pid = _parse_source_key(args.key, "--key")
+        _emit(_read_snapshot(
+            conn,
+            lambda ro: identity_mod.status_range(
+                ro, args.release, server, tenant, pid, args.from_date,
+                args.to_date)))
+    finally:
+        conn.close()
+
+
+def cmd_identity_decision(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        _emit(_read_snapshot(
+            conn,
+            lambda ro: identity_mod.decision_info(
+                ro, args.release, args.decision_id, args.date)))
+    finally:
+        conn.close()
+
+
+def cmd_identity_verify(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        left = _parse_source_key(args.left, "--left")
+        right = _parse_source_key(args.right, "--right")
+        _emit(_read_snapshot(
+            conn,
+            lambda ro: identity_mod.verify_pair(ro, args.release, args.date,
+                                                left, right),
+            args.hold_open))
+    finally:
+        conn.close()
+
+
+def cmd_identity_stats(args: argparse.Namespace) -> None:
+    _paths, _config, conn = _open_repo(args)
+    try:
+        ensure_identity_schema(conn)
+        _emit(_read_snapshot(
+            conn, lambda ro: identity_mod.stats(ro, args.release)))
+    finally:
+        conn.close()
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="fhist",
                                 description="FHIR R4 offline history object store")
@@ -506,6 +674,80 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--status", action="store_true",
                     help="show loader state instead of loading")
     sp.set_defaults(func=cmd_bedload)
+
+    sp = sub.add_parser(
+        "identity", help="cross-source patient identity dimension")
+    isub = sp.add_subparsers(dest="identity_command", required=True)
+
+    ip = isub.add_parser("publish", help="publish an identity-dimension release")
+    ip.add_argument("--release", type=int, required=True,
+                    help="caller-given unique publication number")
+    ip.add_argument("--parent", type=int, default=None,
+                    help="parent release number (omit for the first release)")
+    ip.add_argument("--cut", dest="cut_vector", action="append", default=[],
+                    metavar="SOURCE|TENANT|CUT",
+                    help="one participating source's complete cut; repeatable")
+    ip.add_argument("--from-date", required=True,
+                    help="first business date, YYYY-MM-DD (inclusive)")
+    ip.add_argument("--to-date", required=True,
+                    help="last business date, YYYY-MM-DD (exclusive)")
+    ip.add_argument("--corrections",
+                    help="NDJSON file: one adjudication per line")
+    ip.add_argument("--interrupt", choices=("exit",), default=None,
+                    help="test hook: die after writing, before COMMIT")
+    ip.set_defaults(func=cmd_identity_publish)
+
+    ip = isub.add_parser("list", help="list published identity releases")
+    ip.set_defaults(func=cmd_identity_list)
+
+    ip = isub.add_parser("show", help="show one identity release")
+    ip.add_argument("--release", type=int, required=True)
+    ip.set_defaults(func=cmd_identity_show)
+
+    ip = isub.add_parser("assign", help="attribution of a source key on a date")
+    ip.add_argument("--release", type=int, required=True)
+    ip.add_argument("--key", required=True, metavar="SOURCE|TENANT|ID")
+    ip.add_argument("--date", required=True)
+    ip.add_argument("--hold-open", type=float, default=0,
+                    help="test hook: hold the read snapshot open for N seconds")
+    ip.set_defaults(func=cmd_identity_assign)
+
+    ip = isub.add_parser("members",
+                         help="enumerate members of a unified key on a date")
+    ip.add_argument("--release", type=int, required=True)
+    ip.add_argument("--unified-key", required=True)
+    ip.add_argument("--date", required=True)
+    ip.set_defaults(func=cmd_identity_members)
+
+    ip = isub.add_parser("status",
+                         help="status/attribution runs of a source key")
+    ip.add_argument("--release", type=int, required=True)
+    ip.add_argument("--key", required=True, metavar="SOURCE|TENANT|ID")
+    ip.add_argument("--from-date", required=True)
+    ip.add_argument("--to-date", required=True,
+                    help="exclusive end date")
+    ip.set_defaults(func=cmd_identity_status)
+
+    ip = isub.add_parser("decision",
+                         help="explain one adjudication and its participation")
+    ip.add_argument("--release", type=int, required=True)
+    ip.add_argument("--decision-id", required=True)
+    ip.add_argument("--date")
+    ip.set_defaults(func=cmd_identity_decision)
+
+    ip = isub.add_parser("verify",
+                         help="same/different check of two keys on a date")
+    ip.add_argument("--release", type=int, required=True)
+    ip.add_argument("--date", required=True)
+    ip.add_argument("--left", required=True, metavar="SOURCE|TENANT|ID")
+    ip.add_argument("--right", required=True, metavar="SOURCE|TENANT|ID")
+    ip.add_argument("--hold-open", type=float, default=0,
+                    help="test hook: hold the read snapshot open for N seconds")
+    ip.set_defaults(func=cmd_identity_verify)
+
+    ip = isub.add_parser("stats", help="per-release processing statistics")
+    ip.add_argument("--release", type=int, required=True)
+    ip.set_defaults(func=cmd_identity_stats)
     return p
 
 
