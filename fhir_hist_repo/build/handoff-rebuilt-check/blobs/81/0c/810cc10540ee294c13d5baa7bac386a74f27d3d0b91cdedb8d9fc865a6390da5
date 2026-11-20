@@ -1,1 +1,0 @@
-{"id":"org1","meta":{"lastUpdated":"2026-01-10T00:00:00Z","versionId":"orgV1"},"name":"Synthetic Org","partOf":{"reference":"https://fhir-alias.example.net/a/Organization/shared"},"resourceType":"Organization"}

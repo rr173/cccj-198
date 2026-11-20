@@ -1,1 +1,0 @@
-{"code":{"text":"synthetic"},"focus":[{"reference":"Patient/p/_history/v2"}],"id":"h","meta":{"lastUpdated":"2026-03-01T00:00:00Z","versionId":"h1"},"resourceType":"Observation","status":"final","subject":{"reference":"Patient/p"}}

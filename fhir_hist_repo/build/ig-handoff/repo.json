@@ -1,9 +1,0 @@
-{
-  "format_version": 1,
-  "sources": [
-    {
-      "aliases": [],
-      "source_server": "https://fhir.example.org/ig"
-    }
-  ]
-}
